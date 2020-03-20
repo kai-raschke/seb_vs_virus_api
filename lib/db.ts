@@ -26,7 +26,7 @@ if (Config.db.dbUrl) {
 else {
     var database = new Sequelize(Config.db.name, Config.db.user, Config.db.pass, {
         dialect: Config.db.dialect,
-        logging: false
+        logging: true
     });
 }
 
@@ -47,7 +47,6 @@ for(let m = -1; ++m < modelArray.length;){
 }
 
 for(let m = -1; ++m < associations.length;){
-    console.log(associations, m);
     associations[m](models);
 }
 
@@ -72,5 +71,6 @@ interface ISysInfo extends Model {
 interface IEntry extends Model {
     create: Function,
     findOne: Function,
+    findAll: Function,
     uid: string
 }

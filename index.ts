@@ -30,8 +30,9 @@ let     app     = new Koa(),
  * Initializes a new server.
  */
 async function startFunction() {
+    console.log(process.env.forceSync);
     await Data.db.sync(
-        { force: process.env.forceSync || true } // Reset database on start || no config means demo mode (reset always)
+        { force: (process.env.forceSync == 'false' ? false : true) } // Reset database on start || no config means demo mode (reset always)
     );
     await init();
 

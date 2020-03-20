@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import * as moment from "moment";
 import { Data } from './../lib/db';
 import { log } from "./../lib/log";
 
@@ -141,6 +142,35 @@ export async function check(ctx: Context) {
     // array hash
     // 2, 3 vorhanden?
     // -14 Tage
-    let userId = ctx.request.body
-    ctx.body = "Nothing to see here";
+    let body = ctx.request.body;
+
+    if (body.uid) {
+        let uid: String = body.uid;
+        try{
+            let didIMet = await Data.Entry.findAll({
+                where: {
+                    uid
+                },
+                include: {
+                    model: Data.Entry,
+                    as: 'Met',
+                    // where: {
+                    //     createdAt: {
+                    //         [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                    //     }
+                    // }
+                }
+            });
+
+            console.log(didIMet);
+            ctx.body = didIMet;
+        }
+        catch(ex){
+            console.error(ex);
+        }
+    }
+    else {
+        ctx.status = 400;
+        ctx.body = "Nothing to see here. Missing your data.";
+    }
 }

@@ -123,8 +123,29 @@ function status(ctx) {
 exports.status = status;
 function check(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
-        let userId = ctx.request.body;
-        ctx.body = "Nothing to see here";
+        let body = ctx.request.body;
+        if (body.uid) {
+            let uid = body.uid;
+            try {
+                let didIMet = yield db_1.Data.Entry.findAll({
+                    where: {
+                        uid
+                    },
+                    include: {
+                        model: db_1.Data.Entry,
+                    }
+                });
+                console.log(didIMet);
+                ctx.body = didIMet;
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+        else {
+            ctx.status = 400;
+            ctx.body = "Nothing to see here. Missing your data.";
+        }
     });
 }
 exports.check = check;
