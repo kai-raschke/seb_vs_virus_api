@@ -1,5 +1,12 @@
 {
-  "name": "cargo7_auftrag_api",
+  "name": "seb_vs_virus_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@types/node": "^13.9.2",
     "bunyan": "^1.8.12",
