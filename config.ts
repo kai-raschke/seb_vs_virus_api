@@ -24,6 +24,7 @@ interface LogsConfig {
 }
 
 interface DatabaseConfig {
+    dbUrl: string,
     host: string,
     port: number,
     name: string,
@@ -49,6 +50,7 @@ const Config: IConfig = {
         dbLevel: process.env.logs_dbLevel || 'warn'
     },
     db: {
+        dbUrl: process.env.DATABASE_URL,
         host: process.env.db_host || 'localhost',
         port: ( Number.isNaN(Number.parseInt(process.env.db_port)) ? 5432 : Number.parseInt(process.env.db_port) ),
         name: process.env.db_name || 'cargo7_auftrag',

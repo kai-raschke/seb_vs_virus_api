@@ -15,12 +15,20 @@ export interface IDb {
 }
 
 let models = {};
-let         modelArray = [], associations = [];
+let modelArray = [], associations = [];
 
-    let database = new Sequelize(Config.db.name, Config.db.user, Config.db.pass, {
-    dialect: Config.db.dialect,
-    logging: false
-});
+if (Config.db.dbUrl) {
+    var database = new Sequelize(Config.db.dbUrl, {
+        dialect: Config.db.dialect,
+        logging: false
+    });
+}
+else {
+    var database = new Sequelize(Config.db.name, Config.db.user, Config.db.pass, {
+        dialect: Config.db.dialect,
+        logging: false
+    });
+}
 
 let modules = fs.readdirSync(path.join(__dirname, '/..', 'models'));
 for(let k = -1; ++k < modules.length;){
