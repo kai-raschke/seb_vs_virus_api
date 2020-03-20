@@ -9,6 +9,7 @@ import { log } from './log';
 export interface IDb {
     SysInfo: ISysInfo,
     Entry: IEntry,
+    Group: IGroup,
     seq: any,
     db: any,
     Op: any
@@ -52,13 +53,15 @@ for(let m = -1; ++m < associations.length;){
 
 let SysInfo: ISysInfo = models["SysInfo"];
 let Entry: IEntry = models["Entry"];
+let Group: IGroup = models["Group"];
 
 let Data: IDb = {
     seq: Sequelize,
     Op: Op,
     db: database,
     SysInfo,
-    Entry
+    Entry,
+    Group
 };
 
 export { Data }
@@ -73,4 +76,12 @@ interface IEntry extends Model {
     findOne: Function,
     findAll: Function,
     uid: string
+}
+
+interface IGroup extends Model {
+    create: Function,
+    findOne: Function,
+    findAll: Function,
+    uid: string,
+    shortcode: string
 }
