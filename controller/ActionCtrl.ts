@@ -1,5 +1,6 @@
 import { Context } from 'koa';
 import * as moment from "moment";
+import * as uuid4 from 'uuid4';
 import { Data } from './../lib/db';
 import { log } from "./../lib/log";
 
@@ -7,46 +8,125 @@ import { log } from "./../lib/log";
  * Root GET Handler: Just return the API name.
  */
 export async function register(ctx: Context) {
-    // uid & status
-    // 0 - 3
+    // generate uuid
+    const uid = uuid4();
 
-    let body = ctx.request.body;
-
-    if (body.uid && body.status) {
-        let uid: String = body.uid;
-        let status: number = Number.parseInt(body.status);
-
-        if (!Number.isNaN(status)) {
-            if (status >= 0 && status <= 4) {
-                try{
-                    await Data.Entry.create(
-                        {
-                            uid, status
-                        }
-                    );
-
-                    ctx.status = 200;
-                }
-                catch(ex){
-                    if (ex.name === "SequelizeUniqueConstraintError") {
-                        ctx.status = 500;
-                        ctx.body = "ID probably already exists."
-                    }
-                    else {
-                        ctx.status = 500;
-                        ctx.body = "Unknown server error."
-                    }
-                }
+    // Save "user" with uid to database
+    try{
+        await Data.Entry.create(
+            {
+                uid
             }
-            else {
-                ctx.status = 400;
-                ctx.body = "Nothing to see here. Wrong data.";
-            }
+        );
+
+        ctx.status = 200;
+        ctx.body = uid;
+    }
+    catch(ex){
+        // could happen (probably not) if uuid collides
+        if (ex.name === "SequelizeUniqueConstraintError") {
+            ctx.status = 500;
+            ctx.body = "ID probably already exists."
         }
         else {
-            ctx.status = 400;
-            ctx.body = "Nothing to see here. Wrong data.";
+            ctx.status = 500;
+            ctx.body = "Unknown server error."
         }
+    }
+}
+
+export async function registerGroup(ctx: Context) {
+    // generate uuid
+    const uid = uuid4();
+    // generate shortcode for group joining
+    const shortcode = Math.random().toString(36).substring(7);
+
+    try{
+        await Data.Group.create(
+            {
+                uid, shortcode
+            }
+        );
+
+        ctx.status = 200;
+        ctx.body = { uid, shortcode };
+    }
+    catch(ex){
+        // could happen (probably not) if uuid collides
+        if (ex.name === "SequelizeUniqueConstraintError") {
+            ctx.status = 500;
+            ctx.body = "ID probably already exists."
+        }
+        else {
+            ctx.status = 500;
+            ctx.body = "Unknown server error."
+        }
+    }
+}
+
+export async function joinGroup(ctx: Context) {
+    let body = ctx.request.body;
+
+    if (body.uid) {
+        let uid: String = body.uid;
+
+        let gid: String, mode: String = 'gid';
+        if (body.gid) {
+            gid = body.gid;
+        }
+        else if (body.shortcode) {
+            gid = body.shortcode;
+            mode = "shortcode"
+        }
+
+        let entry = await Data.Entry.findOne(
+            {
+                attributes: [ 'id', 'uid', 'status' ],
+                where: {
+                    uid
+                }
+            }
+        );
+
+        let Group;
+        if (mode === 'gid') {
+            Group = await Data.Group.findOne(
+                { where: { uid: gid } }
+            );
+        }
+        else if (mode === 'shortcode') {
+            Group = await Data.Group.findOne(
+                { where: { shortcode: gid } }
+            );
+        }
+
+        let inAlready = await entry.hasMember(Group);
+
+        console.log(inAlready);
+
+        if (!inAlready)
+            await entry.addMember(Group);
+
+        let member = await Data.Entry.findAll(
+            {
+                include: {
+                    model: Data.Group,
+                    as: 'Member',
+                    where: {
+                        uid: gid
+                    },
+                    required: true
+                }
+            }
+        );
+        console.log(member);
+
+        for (let i = -1; ++i < member.length;) {
+            if (member[i].uid !== uid) //nicht den eigenen Nutzer untereinander verknüpfen
+                await entry.addMet(member[i]);
+        }
+
+        ctx.status = 200;
     }
     else {
         ctx.status = 400;
@@ -98,7 +178,7 @@ export async function status(ctx: Context) {
 
     let body = ctx.request.body;
 
-    if (body.uid && body.status) {
+    if (body.uid && body.status || body.uid && body.status == 0) {
         let uid: String = body.uid;
         let status: number = Number.parseInt(body.status);
 
@@ -136,6 +216,10 @@ export async function status(ctx: Context) {
             ctx.body = "Nothing to see here. Wrong data.";
         }
     }
+    else{
+        ctx.status = 400;
+        ctx.body = "Nothing to see here. Wrong data.";
+    }
 }
 
 export async function check(ctx: Context) {
@@ -147,22 +231,21 @@ export async function check(ctx: Context) {
     if (body.uid) {
         let uid: String = body.uid;
         try{
-            let didIMet = await Data.Entry.findAll({
+            let didIMet = await Data.Entry.findOne({
                 where: {
                     uid
                 },
                 include: {
                     model: Data.Entry,
                     as: 'Met',
-                    // where: {
-                    //     createdAt: {
-                    //         [Data.Op.gte]: moment().subtract(14, 'days').toDate()
-                    //     }
-                    // }
+                    where: {
+                        createdAt: {
+                            [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                        }
+                    }
                 }
             });
 
-            console.log(didIMet);
             ctx.body = didIMet;
         }
         catch(ex){
