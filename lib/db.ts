@@ -46,23 +46,23 @@ let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
 
 // Set associations
-Entry.belongsToMany(
-    Entry,
-    {
-        as: 'Met',
-        through: 'connection'
-    }
-);
+Entry.associate = () => {
+    Entry.belongsToMany(
+        Entry,
+        {
+            as: 'Met',
+            through: 'connection'
+        }
+    );
 
-Entry.belongsToMany(
-    Group,
-    {
-        as: 'Member',
-        through: 'GroupMember'
-    }
-);
-
-
+    Entry.belongsToMany(
+        Group,
+        {
+            as: 'Member',
+            through: 'GroupMember'
+        }
+    );
+};
 
 let Data: IDb = {
     seq: Sequelize,
@@ -91,6 +91,7 @@ interface ISysInfo extends Model {
 }
 
 interface IEntry extends Model {
+    associate: (models) => void;
     create: Function,
     findOne: Function,
     findAll: Function,
