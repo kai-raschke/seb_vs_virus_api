@@ -4,19 +4,12 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": 3004,
-        "logs_console": true,
-        "logs_consoleLevel": "info",
-        "logs_file": true,
-        "logs_fileLevel": "warn",
-        "logs_filePath": null,
-        "logs_db": true,
-        "logs_dbLevel": "warn",
         "db_host":  "localhost",
         "db_port":  5432,
         "db_name":  "seb_vs_virus",
         "db_user":  "postgres",
         "db_dialect": "postgres",
-        "forceSync": true
+        "forceSync": false
       }
     }
   ]
