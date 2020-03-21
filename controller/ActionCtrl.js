@@ -40,7 +40,7 @@ exports.register = register;
 function registerGroup(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const gid = uuid4();
-        const shortcode = Math.random().toString(36).substring(7);
+        const shortcode = leftPad(randomInt(0, 9999999), 7);
         try {
             yield db_1.Data.Group.create({
                 gid, shortcode
@@ -292,4 +292,17 @@ function check(ctx) {
     });
 }
 exports.check = check;
+function leftPad(str, length) {
+    str = str == null ? '' : String(str);
+    length = ~~length;
+    let pad = '';
+    let padLength = length - str.length;
+    while (padLength--) {
+        pad += '0';
+    }
+    return pad + str;
+}
+function randomInt(low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
 //# sourceMappingURL=ActionCtrl.js.map

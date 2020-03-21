@@ -44,7 +44,7 @@ export async function registerGroup(ctx: Context) {
     // generate uuid
     const gid = uuid4();
     // generate shortcode for group joining
-    const shortcode = Math.random().toString(36).substring(7);
+    const shortcode = leftPad(randomInt(0, 9999999), 7);
 
     try{
         await Data.Group.create(
@@ -359,4 +359,21 @@ export async function check(ctx: Context) {
         ctx.status = 400;
         ctx.body = "Nothing to see here. Missing your data.";
     }
+}
+
+function leftPad(str, length) {
+    str = str == null ? '' : String(str);
+    length = ~~length;
+    let pad = '';
+    let padLength = length - str.length;
+
+    while (padLength--) {
+        pad += '0'
+    }
+
+    return pad + str
+}
+
+function randomInt(low, high) {
+    return Math.floor(Math.random() * (high - low) + low)
 }
