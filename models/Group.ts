@@ -20,4 +20,4 @@ const Group = (sequelize, DataTypes) => {
     }, {});
 };
 
-module.exports = { models: [Group]};
+module.exports = Group;

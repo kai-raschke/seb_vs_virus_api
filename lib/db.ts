@@ -35,17 +35,22 @@ for(let k = -1; ++k < modules.length;){
 }
 
 // Import all queried models into sequelize
-for(let m = -1; ++m < modelArray.length;){
-    let model = database.import(modelArray[m].name, modelArray[m]);
-    models[model.name] = model;
-}
+// for(let m = -1; ++m < modelArray.length;){
+//     let model = database.import(modelArray[m].name, modelArray[m]);
+//     models[model.name] = model;
+// }
 
 // List of models with typings
-let SysInfo: ISysInfo = models["SysInfo"];
-let Entry: IEntry = models["Entry"];
-let Group: IGroup = models["Group"];
+// let SysInfo: ISysInfo = models["SysInfo"];
+// let Entry: IEntry = models["Entry"];
+// let Group: IGroup = models["Group"];
+
+let SysInfo = database.import(path.join(__dirname, '..', 'models', 'SysInfo.js'));//models["SysInfo"];
+let Entry = database.import(path.join(__dirname, '..', 'models', 'Entry.js'));//models["Entry"];
+let Group = database.import(path.join(__dirname, '..', 'models', 'Group.js'));//models["Group"];
 
 // Entry.associate = function() {
+// @ts-ignore
 Entry.belongsToMany(
     Entry,
     {
@@ -54,6 +59,7 @@ Entry.belongsToMany(
     }
 );
 
+// @ts-ignore
 Entry.belongsToMany(
     Group,
     {
@@ -62,6 +68,7 @@ Entry.belongsToMany(
     }
 );
 
+// @ts-ignore
 Group.belongsToMany(
     Entry,
     {
@@ -74,22 +81,21 @@ Group.belongsToMany(
 // Associate
 // Entry.associate();
 
+// @ts-ignore
 let Data: IDb = {
     seq: Sequelize,
     Op: Op,
     db: database,
-    SysInfo,
-    Entry,
-    Group
+    SysInfo, Group, Entry
 };
 
 export { Data }
 
 // Interfaces
 export interface IDb {
-    SysInfo: ISysInfo,
-    Entry: IEntry,
-    Group: IGroup,
+    SysInfo: any,
+    Entry: any,
+    Group: any,
     seq: any,
     db: any,
     Op: any

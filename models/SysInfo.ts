@@ -11,4 +11,4 @@ const SysInfo = (sequelize, DataTypes) => {
     })
 };
 
-module.exports = { models: [SysInfo]};
+module.exports = SysInfo;

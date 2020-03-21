@@ -31,5 +31,5 @@ const Entry = (sequelize, DataTypes) => {
     });
     return E;
 };
-module.exports = { models: [Entry] };
+module.exports = Entry;
 //# sourceMappingURL=Entry.js.map

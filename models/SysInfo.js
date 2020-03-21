@@ -9,5 +9,5 @@ const SysInfo = (sequelize, DataTypes) => {
         freezeTableName: true,
     });
 };
-module.exports = { models: [SysInfo] };
+module.exports = SysInfo;
 //# sourceMappingURL=SysInfo.js.map
