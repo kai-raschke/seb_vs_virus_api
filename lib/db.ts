@@ -45,9 +45,9 @@ for(let k = -1; ++k < modules.length;){
 // let Entry: IEntry = models["Entry"];
 // let Group: IGroup = models["Group"];
 
-let SysInfo = database.import(path.join(__dirname, '..', 'models', 'SysInfo.js'));//models["SysInfo"];
-let Entry = database.import(path.join(__dirname, '..', 'models', 'Entry.js'));//models["Entry"];
-let Group = database.import(path.join(__dirname, '..', 'models', 'Group.js'));//models["Group"];
+let SysInfo = database.import(path.join('..', 'models', 'SysInfo.js'));//models["SysInfo"];
+let Entry = database.import(path.join('..', 'models', 'Entry.js'));//models["Entry"];
+let Group = database.import(path.join('..', 'models', 'Group.js'));//models["Group"];
 
 // Entry.associate = function() {
 // @ts-ignore
