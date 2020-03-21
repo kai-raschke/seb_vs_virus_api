@@ -20,22 +20,4 @@ const Entry = (sequelize, DataTypes) => {
     });
 };
 
-const Associations = (models) => {
-    models.Entry.belongsToMany(
-        models.Entry,
-        {
-            as: 'Met',
-            through: 'connection'
-        }
-    );
-
-    models.Entry.belongsToMany(
-        models.Group,
-        {
-            as: 'Member',
-            through: 'GroupMember'
-        }
-    );
-};
-
-module.exports = { models: [Entry], Associations};
+module.exports = { models: [Entry]};
