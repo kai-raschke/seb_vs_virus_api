@@ -18,7 +18,7 @@ if (Config.db.dbUrl) {
 else {
     var database = new Sequelize(Config.db.name, Config.db.user, Config.db.pass, {
         dialect: Config.db.dialect,
-        logging: true
+        logging: false
     });
 }
 
