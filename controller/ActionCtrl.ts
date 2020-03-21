@@ -55,17 +55,40 @@ export async function registerGroup(ctx: Context) {
     // generate uuid
     const gid = uuid4();
     // generate shortcode for group joining
-    const shortcode = leftPad(randomInt(0, 9999999), 7);
-
+    //const shortcode = leftPad(randomInt(0, 9999999), 7);
     try{
-        await Data.Group.create(
-            {
-                gid, shortcode
-            }
-        );
+        let exists = null;
+        let shortcode, loops = 0;
 
-        ctx.status = 200;
-        ctx.body = { gid, shortcode };
+        // Try to prevent duplicates of groups and waiting to long on heavy usage
+        // TODO: Bigger range of possible group shortcodes, without being inconvenient
+        // TODO: Prevent on database side 'unique' probably better
+        do {
+            shortcode = leftPad(randomInt(0, 9999999), 7);
+            loops++;
+
+            exists = await Data.Group.findOne({
+                where: {
+                    shortcode
+                }
+            });
+        } while(exists && loops < 9999);
+
+        // If 9999 loops are done, try again later, random did not get a free group right now
+        if (loops === 9999) {
+            ctx.status = 404;
+            ctx.body = "No free group number right know. Try again later";
+        }
+        else {
+            await Data.Group.create(
+                {
+                    gid, shortcode
+                }
+            );
+
+            ctx.status = 200;
+            ctx.body = { gid, shortcode };
+        }
     }
     catch(ex){
         // could happen (probably not) if uuid collides
@@ -75,7 +98,8 @@ export async function registerGroup(ctx: Context) {
         }
         else {
             ctx.status = 500;
-            ctx.body = "Unknown server error."
+            ctx.body = "Unknown server error.";
+            console.error(ex);
         }
     }
 }

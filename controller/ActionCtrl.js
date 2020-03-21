@@ -48,13 +48,29 @@ exports.register = register;
 function registerGroup(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const gid = uuid4();
-        const shortcode = leftPad(randomInt(0, 9999999), 7);
         try {
-            yield db_1.Data.Group.create({
-                gid, shortcode
-            });
-            ctx.status = 200;
-            ctx.body = { gid, shortcode };
+            let exists = null;
+            let shortcode, loops = 0;
+            do {
+                shortcode = leftPad(randomInt(0, 9999999), 7);
+                loops++;
+                exists = yield db_1.Data.Group.findOne({
+                    where: {
+                        shortcode
+                    }
+                });
+            } while (exists && loops < 9999);
+            if (loops === 9999) {
+                ctx.status = 404;
+                ctx.body = "No free group number right know. Try again later";
+            }
+            else {
+                yield db_1.Data.Group.create({
+                    gid, shortcode
+                });
+                ctx.status = 200;
+                ctx.body = { gid, shortcode };
+            }
         }
         catch (ex) {
             if (ex.name === "SequelizeUniqueConstraintError") {
@@ -64,6 +80,7 @@ function registerGroup(ctx) {
             else {
                 ctx.status = 500;
                 ctx.body = "Unknown server error.";
+                console.error(ex);
             }
         }
     });
