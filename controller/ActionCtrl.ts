@@ -89,7 +89,7 @@ export async function joinGroup(ctx: Context) {
 
         let entry = await Data.Entry.findOne(
             {
-                attributes: [ 'id', 'uid', 'status' ],
+                attributes: [ 'id', 'uid', 'status', 'key' ],
                 where: {
                     uid
                 }
@@ -110,33 +110,35 @@ export async function joinGroup(ctx: Context) {
 
         let inAlready = await entry.hasMember(Group);
 
-        console.log(inAlready);
+        if (body.key === entry.key) {
+            if (!inAlready)
+                await entry.addMember(Group);
 
-        if (!inAlready)
-            await entry.addMember(Group);
+            let member = await Data.Entry.findAll(
+                {
+                    include: {
+                        model: Data.Group,
+                        as: 'Member',
+                        where: {
+                            gid
+                        },
+                        required: true
+                    }
+                }
+            );
 
-        let member = await Data.Entry.findAll(
-            {
-                include: {
-                    model: Data.Group,
-                    as: 'Member',
-                    where: {
-                        gid
-                    },
-                    required: true
+            for (let i = -1; ++i < member.length;) {
+                if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
+                    await entry.addMet(member[i]);
+                    await member[i].addMet(entry);
                 }
             }
-        );
-        console.log(member);
 
-        for (let i = -1; ++i < member.length;) {
-            if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
-                await entry.addMet(member[i]);
-                await member[i].addMet(entry);
-            }
+            ctx.status = 200;
         }
-
-        ctx.status = 200;
+        else {
+            ctx.status = 403;
+        }
     }
     else {
         ctx.status = 400;
@@ -199,7 +201,7 @@ export async function connect(ctx: Context) {
 
         let entry = await Data.Entry.findOne(
             {
-                attributes: [ 'id', 'uid', 'status' ],
+                attributes: [ 'id', 'uid', 'status', 'key' ],
                 where: {
                     uid
                 }
@@ -216,13 +218,18 @@ export async function connect(ctx: Context) {
         );
 
         if (entry && xEntry) {
-            // Person who scanned has met
-            await entry.addMet(xEntry);
+            if (body.key === entry.key){
+                // Person who scanned has met
+                await entry.addMet(xEntry);
 
-            // Also the other way around, the scanned person was met
-            await xEntry.addMet(entry);
+                // Also the other way around, the scanned person was met
+                await xEntry.addMet(entry);
 
-            ctx.status = 200;
+                ctx.status = 200;
+            }
+            else {
+                ctx.status = 403;
+            }
         }
     }
     else {

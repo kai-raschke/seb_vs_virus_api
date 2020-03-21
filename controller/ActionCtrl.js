@@ -75,7 +75,7 @@ function joinGroup(ctx) {
                 mode = "shortcode";
             }
             let entry = yield db_1.Data.Entry.findOne({
-                attributes: ['id', 'uid', 'status'],
+                attributes: ['id', 'uid', 'status', 'key'],
                 where: {
                     uid
                 }
@@ -88,27 +88,30 @@ function joinGroup(ctx) {
                 Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
             }
             let inAlready = yield entry.hasMember(Group);
-            console.log(inAlready);
-            if (!inAlready)
-                yield entry.addMember(Group);
-            let member = yield db_1.Data.Entry.findAll({
-                include: {
-                    model: db_1.Data.Group,
-                    as: 'Member',
-                    where: {
-                        gid
-                    },
-                    required: true
+            if (body.key === entry.key) {
+                if (!inAlready)
+                    yield entry.addMember(Group);
+                let member = yield db_1.Data.Entry.findAll({
+                    include: {
+                        model: db_1.Data.Group,
+                        as: 'Member',
+                        where: {
+                            gid
+                        },
+                        required: true
+                    }
+                });
+                for (let i = -1; ++i < member.length;) {
+                    if (member[i].uid !== uid) {
+                        yield entry.addMet(member[i]);
+                        yield member[i].addMet(entry);
+                    }
                 }
-            });
-            console.log(member);
-            for (let i = -1; ++i < member.length;) {
-                if (member[i].uid !== uid) {
-                    yield entry.addMet(member[i]);
-                    yield member[i].addMet(entry);
-                }
+                ctx.status = 200;
             }
-            ctx.status = 200;
+            else {
+                ctx.status = 403;
+            }
         }
         else {
             ctx.status = 400;
@@ -160,7 +163,7 @@ function connect(ctx) {
             let uid = body.uid;
             let xid = body.xid;
             let entry = yield db_1.Data.Entry.findOne({
-                attributes: ['id', 'uid', 'status'],
+                attributes: ['id', 'uid', 'status', 'key'],
                 where: {
                     uid
                 }
@@ -172,9 +175,14 @@ function connect(ctx) {
                 }
             });
             if (entry && xEntry) {
-                yield entry.addMet(xEntry);
-                yield xEntry.addMet(entry);
-                ctx.status = 200;
+                if (body.key === entry.key) {
+                    yield entry.addMet(xEntry);
+                    yield xEntry.addMet(entry);
+                    ctx.status = 200;
+                }
+                else {
+                    ctx.status = 403;
+                }
             }
         }
         else {
