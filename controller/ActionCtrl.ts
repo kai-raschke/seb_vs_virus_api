@@ -361,6 +361,9 @@ export async function check(ctx: Context) {
     }
 }
 
+/**
+ * Count number of connected peers
+ */
 export async function count(ctx: Context) {
     let body = ctx.request.body;
 
