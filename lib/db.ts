@@ -54,13 +54,21 @@ let Group: IGroup = models["Group"];
         }
     );
 
-    Entry.belongsToMany(
-        Group,
-        {
-            as: 'Member',
-            through: 'GroupMember'
-        }
-    );
+    // Entry.belongsToMany(
+    //     Group,
+    //     {
+    //         as: 'Member',
+    //         through: 'GroupMember'
+    //     }
+    // );
+
+Group.belongsToMany(
+    Entry,
+    {
+        as: 'Member',
+        through: 'GroupMember'
+    }
+);
 // };
 
 // Associate
@@ -108,4 +116,6 @@ interface IGroup extends Model {
     findAll: Function,
     gid: string,
     shortcode: string
+
+    belongsToMany(Entry: IEntry, options: { through: string; as: string }): void;
 }
