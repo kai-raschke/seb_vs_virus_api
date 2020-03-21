@@ -41,9 +41,21 @@ for(let m = -1; ++m < modelArray.length;){
 }
 
 // Set associations
-for(let m = -1; ++m < associations.length;){
-    associations[m](models);
-}
+models["Entry"].belongsToMany(
+    models["Entry"],
+    {
+        as: 'Met',
+        through: 'connection'
+    }
+);
+
+models["Entry"].belongsToMany(
+    models["Group"],
+    {
+        as: 'Member',
+        through: 'GroupMember'
+    }
+);
 
 // List of models with typings
 let SysInfo: ISysInfo = models["SysInfo"];
