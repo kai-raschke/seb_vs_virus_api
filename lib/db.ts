@@ -45,24 +45,8 @@ let SysInfo: ISysInfo = models["SysInfo"];
 let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
 
-// Set associations
-Entry.associate = () => {
-    Entry.belongsToMany(
-        Entry,
-        {
-            as: 'Met',
-            through: 'connection'
-        }
-    );
-
-    Entry.belongsToMany(
-        Group,
-        {
-            as: 'Member',
-            through: 'GroupMember'
-        }
-    );
-};
+// Associate
+Entry.associate(models);
 
 let Data: IDb = {
     seq: Sequelize,

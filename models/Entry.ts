@@ -1,7 +1,7 @@
 'use strict';
 
 const Entry = (sequelize, DataTypes) => {
-    return sequelize.define('Entry', {
+    const E = sequelize.define('Entry', {
         uid: {
             type: DataTypes.UUID,
             allowNull: false
@@ -13,6 +13,14 @@ const Entry = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        age: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        sex: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     }, {
         indexes:[
@@ -22,6 +30,25 @@ const Entry = (sequelize, DataTypes) => {
             }
         ]
     });
+    E.associate = function(models) {
+        E.belongsToMany(
+            E,
+            {
+                as: 'Met',
+                through: 'connection'
+            }
+        );
+
+        E.belongsToMany(
+            models.Group,
+            {
+                as: 'Member',
+                through: 'GroupMember'
+            }
+        );
+    };
+
+    return E;
 };
 
 module.exports = { models: [Entry]};
