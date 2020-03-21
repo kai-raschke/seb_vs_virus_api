@@ -228,7 +228,7 @@ function check(ctx) {
         if (body.uid) {
             let uid = body.uid;
             try {
-                let didIMet = yield db_1.Data.Entry.findOne({
+                let didIMet = yield db_1.Data.Entry.findAll({
                     where: {
                         uid
                     },
@@ -236,13 +236,25 @@ function check(ctx) {
                         model: db_1.Data.Entry,
                         as: 'Met',
                         where: {
-                            createdAt: {
-                                [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                            status: { [db_1.Data.Op.gte]: 3 }
+                        },
+                        through: {
+                            where: {
+                                createdAt: {
+                                    [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                }
                             }
                         }
                     }
                 });
-                ctx.body = didIMet;
+                if (didIMet.length === 0) {
+                    ctx.status = 200;
+                    ctx.body = false;
+                }
+                else {
+                    ctx.status = 200;
+                    ctx.body = true;
+                }
             }
             catch (ex) {
                 console.error(ex);

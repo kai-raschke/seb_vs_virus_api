@@ -292,7 +292,7 @@ export async function check(ctx: Context) {
     if (body.uid) {
         let uid: String = body.uid;
         try{
-            let didIMet = await Data.Entry.findOne({
+            let didIMet = await Data.Entry.findAll({
                 where: {
                     uid
                 },
@@ -300,14 +300,28 @@ export async function check(ctx: Context) {
                     model: Data.Entry,
                     as: 'Met',
                     where: {
-                        createdAt: {
-                            [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                        status: { [Data.Op.gte]: 3 }
+                    },
+                    through: {
+                        where: {
+                            createdAt: {
+                                [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                            }
                         }
                     }
                 }
             });
 
-            ctx.body = didIMet;
+            // no case in the chain is critical
+            if (didIMet.length === 0) {
+                ctx.status = 200;
+                ctx.body = false
+            }
+            // Otherwise someone in the chain is critical
+            else {
+                ctx.status = 200;
+                ctx.body = true;
+            }
         }
         catch(ex){
             console.error(ex);
