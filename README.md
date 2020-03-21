@@ -18,6 +18,10 @@ npm install
 
 Starte die API
  ``` npm start ```
+ 
+Swagger: https://app.swaggerhub.com/apis/kai-raschke/seb_vs_virus_api/1.0.0
+
+ERM: https://dbdiagram.io/d/5e75790c4495b02c3b888bc6
 
 ## App Config
 
