@@ -40,19 +40,19 @@ export async function register(ctx: Context) {
  */
 export async function registerGroup(ctx: Context) {
     // generate uuid
-    const uid = uuid4();
+    const gid = uuid4();
     // generate shortcode for group joining
     const shortcode = Math.random().toString(36).substring(7);
 
     try{
         await Data.Group.create(
             {
-                uid, shortcode
+                gid, shortcode
             }
         );
 
         ctx.status = 200;
-        ctx.body = { uid, shortcode };
+        ctx.body = { gid, shortcode };
     }
     catch(ex){
         // could happen (probably not) if uuid collides
@@ -97,7 +97,7 @@ export async function joinGroup(ctx: Context) {
         let Group;
         if (mode === 'gid') {
             Group = await Data.Group.findOne(
-                { where: { uid: gid } }
+                { where: { gid } }
             );
         }
         else if (mode === 'shortcode') {
@@ -119,7 +119,7 @@ export async function joinGroup(ctx: Context) {
                     model: Data.Group,
                     as: 'Member',
                     where: {
-                        uid: gid
+                        gid
                     },
                     required: true
                 }
@@ -139,6 +139,48 @@ export async function joinGroup(ctx: Context) {
         ctx.body = "Nothing to see here. Missing your data.";
     }
 }
+
+/**
+ * Check TTL of group (invalid after 24 hours)
+ */
+export async function groupAlive(ctx: Context) {
+    let body = ctx.request.body;
+
+    if (body.gid) {
+        let gid = body.gid;
+        try {
+            let group = await Data.Group.findOne(
+                { where: { gid }}
+            );
+
+            if (group) {
+                let now = moment.utc(group.createdAt);
+                let then = moment.utc().subtract(group.ttl, 'hours');
+
+                // Is group older than ttl
+                if (now.isBefore(then)) {
+                    ctx.status = 200;
+                    ctx.body = false;
+                }
+                else {
+                    ctx.status = 200;
+                    ctx.body = true;
+                }
+            }
+            else {
+                ctx.status = 404;
+                ctx.body = "Could not find your group";
+            }
+        }
+        catch (ex){
+            ctx.status = 500;
+            ctx.body = "Something went wrong";
+        }
+    }
+    else {
+        ctx.status = 400;
+        ctx.body = "Nothing to see here. Missing your data.";
+    }}
 
 /**
  * Connect to someone else (alias I met someone)

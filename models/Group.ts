@@ -2,7 +2,7 @@
 
 const Group = (sequelize, DataTypes) => {
     return sequelize.define('Group', {
-        uid: {
+        gid: {
             type: DataTypes.UUID,
             allowNull: false
         },

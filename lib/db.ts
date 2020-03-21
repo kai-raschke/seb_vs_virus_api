@@ -82,6 +82,6 @@ interface IGroup extends Model {
     create: Function,
     findOne: Function,
     findAll: Function,
-    uid: string,
+    gid: string,
     shortcode: string
 }

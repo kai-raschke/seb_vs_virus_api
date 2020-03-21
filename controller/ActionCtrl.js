@@ -37,14 +37,14 @@ function register(ctx) {
 exports.register = register;
 function registerGroup(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uid = uuid4();
+        const gid = uuid4();
         const shortcode = Math.random().toString(36).substring(7);
         try {
             yield db_1.Data.Group.create({
-                uid, shortcode
+                gid, shortcode
             });
             ctx.status = 200;
-            ctx.body = { uid, shortcode };
+            ctx.body = { gid, shortcode };
         }
         catch (ex) {
             if (ex.name === "SequelizeUniqueConstraintError") {
@@ -80,7 +80,7 @@ function joinGroup(ctx) {
             });
             let Group;
             if (mode === 'gid') {
-                Group = yield db_1.Data.Group.findOne({ where: { uid: gid } });
+                Group = yield db_1.Data.Group.findOne({ where: { gid } });
             }
             else if (mode === 'shortcode') {
                 Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
@@ -94,7 +94,7 @@ function joinGroup(ctx) {
                     model: db_1.Data.Group,
                     as: 'Member',
                     where: {
-                        uid: gid
+                        gid
                     },
                     required: true
                 }
@@ -113,6 +113,42 @@ function joinGroup(ctx) {
     });
 }
 exports.joinGroup = joinGroup;
+function groupAlive(ctx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let body = ctx.request.body;
+        if (body.gid) {
+            let gid = body.gid;
+            try {
+                let group = yield db_1.Data.Group.findOne({ where: { gid } });
+                if (group) {
+                    let now = moment.utc(group.createdAt);
+                    let then = moment.utc().subtract(group.ttl, 'hours');
+                    if (now.isBefore(then)) {
+                        ctx.status = 200;
+                        ctx.body = false;
+                    }
+                    else {
+                        ctx.status = 200;
+                        ctx.body = true;
+                    }
+                }
+                else {
+                    ctx.status = 404;
+                    ctx.body = "Could not find your group";
+                }
+            }
+            catch (ex) {
+                ctx.status = 500;
+                ctx.body = "Something went wrong";
+            }
+        }
+        else {
+            ctx.status = 400;
+            ctx.body = "Nothing to see here. Missing your data.";
+        }
+    });
+}
+exports.groupAlive = groupAlive;
 function connect(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         let body = ctx.request.body;
