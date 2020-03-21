@@ -1,6 +1,9 @@
 
 # seb_vs_virus_api
 
+*Anwendung ist in TYPESCRIPT geschrieben.
+Vorhandene kompilierte JS Scripte liegen nur für Heroku bereits vor.*
+
 ## Installation
 
 ```
