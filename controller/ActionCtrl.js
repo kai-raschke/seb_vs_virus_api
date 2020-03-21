@@ -101,8 +101,10 @@ function joinGroup(ctx) {
             });
             console.log(member);
             for (let i = -1; ++i < member.length;) {
-                if (member[i].uid !== uid)
+                if (member[i].uid !== uid) {
                     yield entry.addMet(member[i]);
+                    yield member[i].addMet(entry);
+                }
             }
             ctx.status = 200;
         }
@@ -229,31 +231,39 @@ function check(ctx) {
             let uid = body.uid;
             try {
                 let didIMet = yield db_1.Data.Entry.findAll({
+                    attributes: ['id'],
                     where: {
                         uid
                     },
                     include: {
                         model: db_1.Data.Entry,
                         as: 'Met',
+                        attributes: ['status'],
                         where: {
                             status: { [db_1.Data.Op.gte]: 3 }
                         },
                         through: {
+                            attributes: ['id'],
                             where: {
                                 createdAt: {
                                     [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
                                 }
                             }
                         }
-                    }
+                    },
+                    raw: true
                 });
                 if (didIMet.length === 0) {
                     ctx.status = 200;
                     ctx.body = false;
                 }
                 else {
+                    let scores = didIMet.map(val => val['Met.status']);
+                    let max = scores.reduce(function (a, b) {
+                        return Math.max(a, b);
+                    });
                     ctx.status = 200;
-                    ctx.body = true;
+                    ctx.body = max;
                 }
             }
             catch (ex) {

@@ -128,8 +128,10 @@ export async function joinGroup(ctx: Context) {
         console.log(member);
 
         for (let i = -1; ++i < member.length;) {
-            if (member[i].uid !== uid) //nicht den eigenen Nutzer untereinander verknüpfen
+            if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
                 await entry.addMet(member[i]);
+                await member[i].addMet(entry);
+            }
         }
 
         ctx.status = 200;
@@ -293,23 +295,27 @@ export async function check(ctx: Context) {
         let uid: String = body.uid;
         try{
             let didIMet = await Data.Entry.findAll({
+                attributes: ['id'],
                 where: {
                     uid
                 },
                 include: {
                     model: Data.Entry,
                     as: 'Met',
+                    attributes: ['status'],
                     where: {
                         status: { [Data.Op.gte]: 3 }
                     },
                     through: {
+                        attributes: ['id'],
                         where: {
                             createdAt: {
                                 [Data.Op.gte]: moment().subtract(14, 'days').toDate()
                             }
                         }
                     }
-                }
+                },
+                raw: true
             });
 
             // no case in the chain is critical
@@ -319,8 +325,16 @@ export async function check(ctx: Context) {
             }
             // Otherwise someone in the chain is critical
             else {
+                // Get all states
+                let scores = didIMet.map(val => val['Met.status']);
+
+                // Calculate the maximum (worst) of all states
+                let max = scores.reduce(function(a, b) {
+                    return Math.max(a, b);
+                });
+
                 ctx.status = 200;
-                ctx.body = true;
+                ctx.body = max;
             }
         }
         catch(ex){
