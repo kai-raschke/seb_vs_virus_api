@@ -11,13 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const uuid4 = require("uuid4");
+const nanoid_1 = require("nanoid");
 const db_1 = require("./../lib/db");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
+        const key = nanoid_1.nanoid(12);
         try {
             yield db_1.Data.Entry.create({
-                uid
+                uid, key
             });
             ctx.status = 200;
             ctx.body = uid;

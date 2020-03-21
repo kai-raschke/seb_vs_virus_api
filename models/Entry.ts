@@ -6,6 +6,10 @@ const Entry = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             allowNull: false
         },
+        key: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         status: {
             type: DataTypes.INTEGER,
             defaultValue: 0

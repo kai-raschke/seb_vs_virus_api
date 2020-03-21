@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import * as moment from "moment";
 import * as uuid4 from 'uuid4';
+import { nanoid } from 'nanoid'
 import { Data } from './../lib/db';
 import { log } from "./../lib/log";
 
@@ -10,12 +11,13 @@ import { log } from "./../lib/log";
 export async function register(ctx: Context) {
     // generate uuid
     const uid = uuid4();
+    const key = nanoid(12);
 
     // Save "user" with uid to database
     try{
         await Data.Entry.create(
             {
-                uid
+                uid, key
             }
         );
 
