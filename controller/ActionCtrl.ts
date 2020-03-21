@@ -5,7 +5,7 @@ import { Data } from './../lib/db';
 import { log } from "./../lib/log";
 
 /**
- * Root GET Handler: Just return the API name.
+ * Register "User" (uuid)
  */
 export async function register(ctx: Context) {
     // generate uuid
@@ -35,6 +35,9 @@ export async function register(ctx: Context) {
     }
 }
 
+/**
+ * Create Group, return gid and shortcode
+ */
 export async function registerGroup(ctx: Context) {
     // generate uuid
     const uid = uuid4();
@@ -64,6 +67,9 @@ export async function registerGroup(ctx: Context) {
     }
 }
 
+/**
+ * Join Group (by gid or shortcode) with your uid
+ */
 export async function joinGroup(ctx: Context) {
     let body = ctx.request.body;
 
@@ -134,6 +140,9 @@ export async function joinGroup(ctx: Context) {
     }
 }
 
+/**
+ * Connect to someone else (alias I met someone)
+ */
 export async function connect(ctx: Context) {
     // zeitpunkt & eigene id & fremde id
     let body = ctx.request.body;
@@ -173,6 +182,9 @@ export async function connect(ctx: Context) {
     }
 }
 
+/**
+ * Change my status
+ */
 export async function status(ctx: Context) {
     // id & zeitpunkt (updatedat) % status
 
@@ -222,6 +234,10 @@ export async function status(ctx: Context) {
     }
 }
 
+/**
+ * Check status of others in time range of 14 days
+ * Return "worst" state
+ */
 export async function check(ctx: Context) {
     // array hash
     // 2, 3 vorhanden?
