@@ -17,9 +17,16 @@ function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
         const key = nanoid(12);
+        let body = ctx.request.body;
+        let age = Number.parseInt(body.age);
+        age = (Number.isNaN(age) ? 0 : age);
+        let sex = Number.parseInt(body.sex);
+        sex = (Number.isNaN(sex) ? 0 : sex);
         try {
             yield db_1.Data.Entry.create({
-                uid, key
+                uid, key,
+                age,
+                sex
             });
             ctx.status = 200;
             ctx.body = { uid, key };

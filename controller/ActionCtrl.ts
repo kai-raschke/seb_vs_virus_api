@@ -13,11 +13,21 @@ export async function register(ctx: Context) {
     const uid = uuid4();
     const key = nanoid(12);
 
+    let body = ctx.request.body;
+
+    let age: number = Number.parseInt(body.age);
+    age = (Number.isNaN(age) ? 0 : age);
+
+    let sex: number = Number.parseInt(body.sex);
+    sex = (Number.isNaN(sex) ? 0 : sex);
+
     // Save "user" with uid to database
     try{
         await Data.Entry.create(
             {
-                uid, key
+                uid, key,
+                age,
+                sex
             }
         );
 
