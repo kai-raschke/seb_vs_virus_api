@@ -45,8 +45,8 @@ for(let k = -1; ++k < modules.length;){
 // let Entry: IEntry = models["Entry"];
 // let Group: IGroup = models["Group"];
 let SysInfoReq = require('./../models/SysInfo.js');
-let EntryReq = require('./../models/SysInfo.js');
-let GroupReq = require('./../models/SysInfo.js');
+let EntryReq = require('./../models/Entry.js');
+let GroupReq = require('./../models/Group.js');
 let SysInfo = database.import('SysInfo', SysInfoReq);//models["SysInfo"];
 let Entry = database.import('Entry', EntryReq);//models["Entry"];
 let Group = database.import('Group', GroupReq);//models["Group"];
@@ -70,14 +70,14 @@ Entry.belongsToMany(
     }
 );
 
-// @ts-ignore
-Group.belongsToMany(
-    Entry,
-    {
-        as: 'Member',
-        through: 'GroupMember'
-    }
-);
+// // @ts-ignore
+// Group.belongsToMany(
+//     Entry,
+//     {
+//         as: 'Member',
+//         through: 'GroupMember'
+//     }
+// );
 // };
 
 // Associate
