@@ -45,6 +45,24 @@ let SysInfo: ISysInfo = models["SysInfo"];
 let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
 
+Entry.associate = function(models) {
+    Entry.belongsToMany(
+        Entry,
+        {
+            as: 'Met',
+            through: 'connection'
+        }
+    );
+
+    Entry.belongsToMany(
+        models.Group,
+        {
+            as: 'Member',
+            through: 'GroupMember'
+        }
+    );
+};
+
 // Associate
 Entry.associate(models);
 

@@ -29,16 +29,6 @@ const Entry = (sequelize, DataTypes) => {
             }
         ]
     });
-    E.associate = function (models) {
-        E.belongsToMany(E, {
-            as: 'Met',
-            through: 'connection'
-        });
-        E.belongsToMany(models.Group, {
-            as: 'Member',
-            through: 'GroupMember'
-        });
-    };
     return E;
 };
 module.exports = { models: [Entry] };
