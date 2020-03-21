@@ -7,7 +7,8 @@ const Entry = (sequelize, DataTypes) => {
             allowNull: false
         },
         status: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     }, {
         indexes:[
