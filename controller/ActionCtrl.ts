@@ -439,6 +439,14 @@ export async function count(ctx: Context) {
     }
 }
 
+/**
+ * Set status by Authority (without being the user)
+ * TODO: Welche Sicherheitsmaßnamhen gegen Missbrauch
+ */
+export async function statusBOS (ctx: Context) {
+    ctx.status = 200;
+}
+
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;

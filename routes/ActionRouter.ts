@@ -1,5 +1,15 @@
 import * as Router from 'koa-router';
-import {check, connect, count, groupAlive, joinGroup, register, registerGroup, status} from "../controller/ActionCtrl";
+import {
+    check,
+    connect,
+    count,
+    groupAlive,
+    joinGroup,
+    register,
+    registerGroup,
+    status,
+    statusBOS
+} from "../controller/ActionCtrl";
 
 /**
  * Root routes: just return the API name.
@@ -12,4 +22,5 @@ export const actionRouter = new Router()
     .post('/status', status)
     .post('/connect', connect)
     .post('/check', check)
-    .post('/count', count);
+    .post('/count', count)
+    .post('/statusBOS', statusBOS);

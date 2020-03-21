@@ -357,6 +357,12 @@ function count(ctx) {
     });
 }
 exports.count = count;
+function statusBOS(ctx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        ctx.status = 200;
+    });
+}
+exports.statusBOS = statusBOS;
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;
