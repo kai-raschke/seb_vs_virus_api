@@ -1,8 +1,8 @@
 'use strict';
 
-// If app is not started by pm2, load app.json instead
 import * as path from "path";
 
+// If app is not started by pm2, load app.json instead
 if(!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'development'; // dev is standard
     try {
@@ -18,6 +18,7 @@ import { Config } from "./config";
 import * as Koa from 'koa';
 import * as IO from 'koa-socket-2';
 
+// Loads app dependencies
 import { log } from './lib/log';
 import { Data } from './lib/db';
 import { init } from './lib/seed';
@@ -30,10 +31,12 @@ let     app     = new Koa(),
  * Initializes a new server.
  */
 async function startFunction() {
-    console.log(process.env.forceSync);
+    // Sync database with sequelize (may force drop all if you wish - see docs)
     await Data.db.sync(
         { force: (process.env.forceSync == 'false' ? false : true) } // Reset database on start || no config means demo mode (reset always)
     );
+
+    // Seeds data
     await init();
 
     // Error catching - override koa's undocumented error handler
@@ -54,7 +57,8 @@ async function startFunction() {
         log.error('error ' + url + ' ' + errorDetails);
     });
 
-    io.attach(app);
+    // Websocket if wanted
+    // io.attach(app);
     // Websocket Routes
     // ...
 

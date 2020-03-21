@@ -12,6 +12,7 @@ import { actionRouter } from "./routes/ActionRouter";
 const db = new Map();
 
 export default function server (app: Application) {
+    // API response time
     app.use(async (ctx: Context, next: Function) => {
         const start: number = Date.now();
         await next(); //
@@ -19,6 +20,7 @@ export default function server (app: Application) {
         ctx.set('X-Response-Time', delta + 'ms');
     });
 
+    // Rate limit the API (maybe malicious user) / 100 requests per IP per Minute
     app.use(ratelimit({
         driver: 'memory',
         db: db,
@@ -30,7 +32,7 @@ export default function server (app: Application) {
             reset: 'Rate-Limit-Reset',
             total: 'Rate-Limit-Total'
         },
-        max: 50,
+        max: 100,
         disableHeader: false
     }));
 

@@ -32,7 +32,6 @@ const server_1 = require("./server");
 let app = new Koa(), io = new IO();
 function startFunction() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(process.env.forceSync);
         yield db_1.Data.db.sync({ force: (process.env.forceSync == 'false' ? false : true) });
         yield seed_1.init();
         app.context.onerror = function onError(err) {
@@ -50,7 +49,6 @@ function startFunction() {
             const url = typeof ctx.request !== 'undefined' ? ctx.request.url : '';
             log_1.log.error('error ' + url + ' ' + errorDetails);
         });
-        io.attach(app);
         server_1.default(app);
         const PORT = config_1.Config.app.port;
         log_1.log.info(`Starting server on http://localhost:${PORT}`);

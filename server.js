@@ -32,7 +32,7 @@ function server(app) {
             reset: 'Rate-Limit-Reset',
             total: 'Rate-Limit-Total'
         },
-        max: 50,
+        max: 100,
         disableHeader: false
     }));
     app.use(bodyParser());

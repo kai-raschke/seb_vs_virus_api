@@ -1,23 +1,14 @@
 import * as path from "path";
 import * as fs from 'fs';
 
-import { Sequelize, Model, DataTypes, BuildOptions, Op } from "sequelize";
+import { Sequelize, Model, Op } from "sequelize";
 
 import { Config } from '../config';
 import { log } from './log';
 
-export interface IDb {
-    SysInfo: ISysInfo,
-    Entry: IEntry,
-    Group: IGroup,
-    seq: any,
-    db: any,
-    Op: any
-}
+let models = {}, modelArray = [], associations = [];
 
-let models = {};
-let modelArray = [], associations = [];
-
+// Heroku uses preconfigured database url, otherwise use values from config
 if (Config.db.dbUrl) {
     var database = new Sequelize(Config.db.dbUrl, {
         dialect: Config.db.dialect,
@@ -31,6 +22,7 @@ else {
     });
 }
 
+// Query all database models
 let modules = fs.readdirSync(path.join(__dirname, '/..', 'models'));
 for(let k = -1; ++k < modules.length;){
     if (modules[k].indexOf('.ts') == -1 && modules[k].indexOf('.map') == -1) {
@@ -42,15 +34,18 @@ for(let k = -1; ++k < modules.length;){
     }
 }
 
+// Import all queried models into sequelize
 for(let m = -1; ++m < modelArray.length;){
     let model = database.import(modelArray[m].name, modelArray[m]);
     models[model.name] = model;
 }
 
+// Set associations
 for(let m = -1; ++m < associations.length;){
     associations[m](models);
 }
 
+// List of models with typings
 let SysInfo: ISysInfo = models["SysInfo"];
 let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
@@ -65,6 +60,16 @@ let Data: IDb = {
 };
 
 export { Data }
+
+// Interfaces
+export interface IDb {
+    SysInfo: ISysInfo,
+    Entry: IEntry,
+    Group: IGroup,
+    seq: any,
+    db: any,
+    Op: any
+}
 
 interface ISysInfo extends Model {
     version: string;
