@@ -9,5 +9,6 @@ exports.actionRouter = new Router()
     .post('/groupalive', ActionCtrl_1.groupAlive)
     .post('/status', ActionCtrl_1.status)
     .post('/connect', ActionCtrl_1.connect)
-    .post('/check', ActionCtrl_1.check);
+    .post('/check', ActionCtrl_1.check)
+    .post('/count', ActionCtrl_1.count);
 //# sourceMappingURL=ActionRouter.js.map

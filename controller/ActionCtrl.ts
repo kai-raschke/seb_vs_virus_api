@@ -361,6 +361,46 @@ export async function check(ctx: Context) {
     }
 }
 
+export async function count(ctx: Context) {
+    let body = ctx.request.body;
+
+    if (body.uid) {
+        let uid: String = body.uid;
+        try {
+            let didIMet = await Data.Entry.findAll({
+                attributes: ['id'],
+                where: {
+                    uid
+                },
+                include: {
+                    model: Data.Entry,
+                    as: 'Met',
+                    attributes: ['status'],
+                    through: {
+                        attributes: ['id'],
+                        where: {
+                            createdAt: {
+                                [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                            }
+                        }
+                    }
+                },
+                raw: true
+            });
+
+            ctx.status = 200;
+            ctx.body = didIMet.length;
+        }
+        catch(ex){
+            console.error(ex);
+        }
+    }
+    else {
+        ctx.status = 400;
+        ctx.body = "Nothing to see here. Missing your data.";
+    }
+}
+
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;

@@ -292,6 +292,46 @@ function check(ctx) {
     });
 }
 exports.check = check;
+function count(ctx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let body = ctx.request.body;
+        if (body.uid) {
+            let uid = body.uid;
+            try {
+                let didIMet = yield db_1.Data.Entry.findAll({
+                    attributes: ['id'],
+                    where: {
+                        uid
+                    },
+                    include: {
+                        model: db_1.Data.Entry,
+                        as: 'Met',
+                        attributes: ['status'],
+                        through: {
+                            attributes: ['id'],
+                            where: {
+                                createdAt: {
+                                    [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                }
+                            }
+                        }
+                    },
+                    raw: true
+                });
+                ctx.status = 200;
+                ctx.body = didIMet.length;
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+        else {
+            ctx.status = 400;
+            ctx.body = "Nothing to see here. Missing your data.";
+        }
+    });
+}
+exports.count = count;
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;
