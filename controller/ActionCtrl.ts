@@ -47,6 +47,8 @@ export async function register(ctx: Context) {
             ctx.body = "Unknown server error.";
             console.error(ex);
         }
+
+        log.error(ex.name);
     }
 }
 
@@ -103,6 +105,8 @@ export async function registerGroup(ctx: Context) {
             ctx.body = "Unknown server error.";
             console.error(ex);
         }
+
+        log.error(ex.name);
     }
 }
 
@@ -218,6 +222,8 @@ export async function groupAlive(ctx: Context) {
         catch (ex){
             ctx.status = 500;
             ctx.body = "Something went wrong";
+            console.error(ex);
+            log.error(ex.name);
         }
     }
     else {
@@ -400,7 +406,11 @@ export async function check(ctx: Context) {
             }
         }
         catch(ex){
+            ctx.status = 500;
+            ctx.body = "Something went wrong";
+
             console.error(ex);
+            log.error(ex.name);
         }
     }
     else {
@@ -443,7 +453,11 @@ export async function count(ctx: Context) {
             ctx.body = didIMet.length;
         }
         catch(ex){
+            ctx.status = 500;
+            ctx.body = "Something went wrong";
+
             console.error(ex);
+            log.error(ex.name);
         }
     }
     else {
