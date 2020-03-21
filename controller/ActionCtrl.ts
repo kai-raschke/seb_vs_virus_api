@@ -343,6 +343,11 @@ export async function check(ctx: Context) {
     if (body.uid) {
         let uid: String = body.uid;
         try{
+            await Data.Entry.update(
+                { lastCheck: moment().toDate() },
+                { where: { uid } }
+            );
+
             let didIMet = await Data.Entry.findAll({
                 attributes: ['id'],
                 where: {

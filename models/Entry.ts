@@ -21,6 +21,9 @@ const Entry = (sequelize, DataTypes) => {
         sex: {
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        lastCheck: {
+            type: DataTypes.DATE
         }
     }, {
         indexes:[

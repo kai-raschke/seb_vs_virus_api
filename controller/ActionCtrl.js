@@ -270,6 +270,7 @@ function check(ctx) {
         if (body.uid) {
             let uid = body.uid;
             try {
+                yield db_1.Data.Entry.update({ lastCheck: moment().toDate() }, { where: { uid } });
                 let didIMet = yield db_1.Data.Entry.findAll({
                     attributes: ['id'],
                     where: {
