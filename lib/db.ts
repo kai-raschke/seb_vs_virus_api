@@ -44,10 +44,12 @@ for(let k = -1; ++k < modules.length;){
 // let SysInfo: ISysInfo = models["SysInfo"];
 // let Entry: IEntry = models["Entry"];
 // let Group: IGroup = models["Group"];
-
-let SysInfo = database.import(path.join('..', 'models', 'SysInfo.js'));//models["SysInfo"];
-let Entry = database.import(path.join('..', 'models', 'Entry.js'));//models["Entry"];
-let Group = database.import(path.join('..', 'models', 'Group.js'));//models["Group"];
+let SysInfoReq = require('./../models/SysInfo.js');
+let EntryReq = require('./../models/SysInfo.js');
+let GroupReq = require('./../models/SysInfo.js');
+let SysInfo = database.import('SysInfo', SysInfoReq);//models["SysInfo"];
+let Entry = database.import('Entry', EntryReq);//models["Entry"];
+let Group = database.import('Group', GroupReq);//models["Group"];
 
 // Entry.associate = function() {
 // @ts-ignore
