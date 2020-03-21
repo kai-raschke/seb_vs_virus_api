@@ -40,27 +40,29 @@ for(let m = -1; ++m < modelArray.length;){
     models[model.name] = model;
 }
 
+// List of models with typings
+let SysInfo: ISysInfo = models["SysInfo"];
+let Entry: IEntry = models["Entry"];
+let Group: IGroup = models["Group"];
+
 // Set associations
-models["Entry"].belongsToMany(
-    models["Entry"],
+Entry.belongsToMany(
+    Entry,
     {
         as: 'Met',
         through: 'connection'
     }
 );
 
-models["Entry"].belongsToMany(
-    models["Group"],
+Entry.belongsToMany(
+    Group,
     {
         as: 'Member',
         through: 'GroupMember'
     }
 );
 
-// List of models with typings
-let SysInfo: ISysInfo = models["SysInfo"];
-let Entry: IEntry = models["Entry"];
-let Group: IGroup = models["Group"];
+
 
 let Data: IDb = {
     seq: Sequelize,
@@ -93,6 +95,8 @@ interface IEntry extends Model {
     findOne: Function,
     findAll: Function,
     uid: string
+
+    belongsToMany(model: any, options: { through: string; as: string }): void;
 }
 
 interface IGroup extends Model {
