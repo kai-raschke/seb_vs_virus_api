@@ -211,9 +211,12 @@ export async function connect(ctx: Context) {
             }
         );
 
-        if (entry) {
-            console.log(entry.protype);
+        if (entry && xEntry) {
+            // Person who scanned has met
             await entry.addMet(xEntry);
+
+            // Also the other way around, the scanned person was met
+            await xEntry.addMet(entry);
 
             ctx.status = 200;
         }

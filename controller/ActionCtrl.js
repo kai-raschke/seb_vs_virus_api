@@ -167,9 +167,9 @@ function connect(ctx) {
                     uid: xid
                 }
             });
-            if (entry) {
-                console.log(entry.protype);
+            if (entry && xEntry) {
                 yield entry.addMet(xEntry);
+                yield xEntry.addMet(entry);
                 ctx.status = 200;
             }
         }
