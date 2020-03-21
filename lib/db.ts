@@ -46,21 +46,21 @@ let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
 
 // Entry.associate = function() {
-    Entry.belongsToMany(
-        Entry,
-        {
-            as: 'Met',
-            through: 'connection'
-        }
-    );
+Entry.belongsToMany(
+    Entry,
+    {
+        as: 'Met',
+        through: 'connection'
+    }
+);
 
-    // Entry.belongsToMany(
-    //     Group,
-    //     {
-    //         as: 'Member',
-    //         through: 'GroupMember'
-    //     }
-    // );
+Entry.belongsToMany(
+    Group,
+    {
+        as: 'Member',
+        through: 'GroupMember'
+    }
+);
 
 Group.belongsToMany(
     Entry,
