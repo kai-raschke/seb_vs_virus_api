@@ -13,6 +13,7 @@ const moment = require("moment");
 const uuid4 = require("uuid4");
 const nanoid = require("nanoid");
 const db_1 = require("./../lib/db");
+const log_1 = require("./../lib/log");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
@@ -28,6 +29,7 @@ function register(ctx) {
                 age,
                 sex
             });
+            log_1.log.info('register', { age, sex });
             ctx.status = 200;
             ctx.body = { uid, key };
         }
@@ -188,13 +190,13 @@ function connect(ctx) {
             let uid = body.uid;
             let xid = body.xid;
             let entry = yield db_1.Data.Entry.findOne({
-                attributes: ['id', 'uid', 'status', 'key'],
+                attributes: ['id', 'uid', 'status', 'key', 'age', 'sex'],
                 where: {
                     uid
                 }
             });
             let xEntry = yield db_1.Data.Entry.findOne({
-                attributes: ['id', 'uid', 'status'],
+                attributes: ['id', 'uid', 'status', 'age', 'sex'],
                 where: {
                     uid: xid
                 }
@@ -203,6 +205,7 @@ function connect(ctx) {
                 if (body.key === entry.key) {
                     yield entry.addMet(xEntry);
                     yield xEntry.addMet(entry);
+                    log_1.log.info('connected', { age: entry.age, sex: entry.sex, xage: xEntry.age, xsex: xEntry.sex });
                     ctx.status = 200;
                 }
                 else {
@@ -234,6 +237,7 @@ function status(ctx) {
                     if (entry) {
                         if (entry.key === body.key) {
                             entry.status = status;
+                            log_1.log.info('status', { status });
                             yield entry.save();
                             ctx.status = 200;
                             ctx.body = { uid: entry.uid, status: entry.status };
@@ -270,6 +274,7 @@ function check(ctx) {
         if (body.uid) {
             let uid = body.uid;
             try {
+                log_1.log.info('check');
                 yield db_1.Data.Entry.update({ lastCheck: moment().toDate() }, { where: { uid } });
                 let didIMet = yield db_1.Data.Entry.findAll({
                     attributes: ['id'],

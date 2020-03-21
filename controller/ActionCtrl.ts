@@ -31,6 +31,8 @@ export async function register(ctx: Context) {
             }
         );
 
+        log.info('register', {age, sex});
+
         ctx.status = 200;
         ctx.body = { uid, key };
     }
@@ -236,7 +238,7 @@ export async function connect(ctx: Context) {
 
         let entry = await Data.Entry.findOne(
             {
-                attributes: [ 'id', 'uid', 'status', 'key' ],
+                attributes: [ 'id', 'uid', 'status', 'key', 'age', 'sex' ],
                 where: {
                     uid
                 }
@@ -245,7 +247,7 @@ export async function connect(ctx: Context) {
 
         let xEntry = await Data.Entry.findOne(
             {
-                attributes: [ 'id', 'uid', 'status' ],
+                attributes: [ 'id', 'uid', 'status', 'age', 'sex' ],
                 where: {
                     uid: xid
                 }
@@ -259,6 +261,8 @@ export async function connect(ctx: Context) {
 
                 // Also the other way around, the scanned person was met
                 await xEntry.addMet(entry);
+
+                log.info('connected', {age: entry.age, sex: entry.sex, xage: xEntry.age, xsex: xEntry.sex});
 
                 ctx.status = 200;
             }
@@ -299,6 +303,8 @@ export async function status(ctx: Context) {
                 if (entry) {
                     if (entry.key === body.key) {
                         entry.status = status;
+
+                        log.info('status', {status});
 
                         await entry.save();
 
@@ -343,6 +349,8 @@ export async function check(ctx: Context) {
     if (body.uid) {
         let uid: String = body.uid;
         try{
+            log.info('check');
+
             await Data.Entry.update(
                 { lastCheck: moment().toDate() },
                 { where: { uid } }
