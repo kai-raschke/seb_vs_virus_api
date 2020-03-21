@@ -45,7 +45,7 @@ let SysInfo: ISysInfo = models["SysInfo"];
 let Entry: IEntry = models["Entry"];
 let Group: IGroup = models["Group"];
 
-Entry.associate = function() {
+// Entry.associate = function() {
     Entry.belongsToMany(
         Entry,
         {
@@ -61,10 +61,10 @@ Entry.associate = function() {
             through: 'GroupMember'
         }
     );
-};
+// };
 
 // Associate
-Entry.associate();
+// Entry.associate();
 
 let Data: IDb = {
     seq: Sequelize,
