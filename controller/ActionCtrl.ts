@@ -32,7 +32,8 @@ export async function register(ctx: Context) {
         }
         else {
             ctx.status = 500;
-            ctx.body = "Unknown server error."
+            ctx.body = "Unknown server error.";
+            console.error(ex);
         }
     }
 }

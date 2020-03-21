@@ -32,6 +32,7 @@ function register(ctx) {
             else {
                 ctx.status = 500;
                 ctx.body = "Unknown server error.";
+                console.error(ex);
             }
         }
     });
