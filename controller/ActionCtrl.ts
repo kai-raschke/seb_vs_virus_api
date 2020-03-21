@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import * as moment from "moment";
 import * as uuid4 from 'uuid4';
-import { nanoid } from 'nanoid'
+import * as nanoid from 'nanoid'
 import { Data } from './../lib/db';
 import { log } from "./../lib/log";
 
@@ -22,7 +22,7 @@ export async function register(ctx: Context) {
         );
 
         ctx.status = 200;
-        ctx.body = uid;
+        ctx.body = { uid, key };
     }
     catch(ex){
         // could happen (probably not) if uuid collides
@@ -247,7 +247,7 @@ export async function status(ctx: Context) {
             if (status >= 0 && status <= 4) {
                 let entry = await Data.Entry.findOne(
                     {
-                        attributes: [ 'id', 'uid', 'status' ],
+                        attributes: [ 'id', 'uid', 'status', 'key' ],
                         where: {
                             uid
                         }
@@ -255,12 +255,17 @@ export async function status(ctx: Context) {
                 );
 
                 if (entry) {
-                    entry.status = status;
+                    if (entry.key === body.key) {
+                        entry.status = status;
 
-                    await entry.save();
+                        await entry.save();
 
-                    ctx.status = 200;
-                    ctx.body = { uid: entry.uid, status: entry.status };
+                        ctx.status = 200;
+                        ctx.body = { uid: entry.uid, status: entry.status };
+                    }
+                    else {
+                        ctx.status = 403;
+                    }
                 }
                 else {
                     ctx.status = 400;

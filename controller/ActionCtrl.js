@@ -11,18 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const uuid4 = require("uuid4");
-const nanoid_1 = require("nanoid");
+const nanoid = require("nanoid");
 const db_1 = require("./../lib/db");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
-        const key = nanoid_1.nanoid(12);
+        const key = nanoid(12);
         try {
             yield db_1.Data.Entry.create({
                 uid, key
             });
             ctx.status = 200;
-            ctx.body = uid;
+            ctx.body = { uid, key };
         }
         catch (ex) {
             if (ex.name === "SequelizeUniqueConstraintError") {
@@ -193,16 +193,21 @@ function status(ctx) {
             if (!Number.isNaN(status)) {
                 if (status >= 0 && status <= 4) {
                     let entry = yield db_1.Data.Entry.findOne({
-                        attributes: ['id', 'uid', 'status'],
+                        attributes: ['id', 'uid', 'status', 'key'],
                         where: {
                             uid
                         }
                     });
                     if (entry) {
-                        entry.status = status;
-                        yield entry.save();
-                        ctx.status = 200;
-                        ctx.body = { uid: entry.uid, status: entry.status };
+                        if (entry.key === body.key) {
+                            entry.status = status;
+                            yield entry.save();
+                            ctx.status = 200;
+                            ctx.body = { uid: entry.uid, status: entry.status };
+                        }
+                        else {
+                            ctx.status = 403;
+                        }
                     }
                     else {
                         ctx.status = 400;
