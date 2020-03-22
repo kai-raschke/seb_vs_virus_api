@@ -254,6 +254,7 @@ export async function groupAlive(ctx: Context) {
         }
     }
     else {
+        console.error('groupalive', ctx.request.body);
         ctx.status = 400;
         ctx.body = "Nothing to see here. Missing your data.";
     }}
