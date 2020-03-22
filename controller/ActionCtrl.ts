@@ -152,18 +152,18 @@ export async function joinGroup(ctx: Context) {
                 );
             }
 
-            console.log(Group);
 
             let now = moment.utc(Group.createdAt);
             let then = moment.utc().subtract(Group.ttl, 'hours');
+            console.log(now, then, now.isBefore(then));
 
             // TODO: Simplify
             // Is group older than ttl
             if (now.isBefore(then)) {
-                Group = Group
+                Group = null
             }
             else {
-                Group = null;
+                Group = Group;
             }
 
             // If group exists and is available (ttl)

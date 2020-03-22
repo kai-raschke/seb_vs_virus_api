@@ -118,14 +118,14 @@ function joinGroup(ctx) {
                 else if (mode === 'shortcode') {
                     Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
                 }
-                console.log(Group);
                 let now = moment.utc(Group.createdAt);
                 let then = moment.utc().subtract(Group.ttl, 'hours');
+                console.log(now, then, now.isBefore(then));
                 if (now.isBefore(then)) {
-                    Group = Group;
+                    Group = null;
                 }
                 else {
-                    Group = null;
+                    Group = Group;
                 }
                 if (Group) {
                     let inAlready = yield entry.hasMember(Group);
