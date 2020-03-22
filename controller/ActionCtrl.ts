@@ -152,36 +152,55 @@ export async function joinGroup(ctx: Context) {
                 );
             }
 
-            let inAlready = await entry.hasMember(Group);
+            let now = moment.utc(Group.createdAt);
+            let then = moment.utc().subtract(Group.ttl, 'hours');
 
-            if (body.key === entry.key) {
-                if (!inAlready)
-                    await entry.addMember(Group);
-
-                let member = await Data.Entry.findAll(
-                    {
-                        include: {
-                            model: Data.Group,
-                            as: 'Member',
-                            where: {
-                                gid: Group.gid
-                            },
-                            required: true
-                        }
-                    }
-                );
-
-                for (let i = -1; ++i < member.length;) {
-                    if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
-                        await entry.addMet(member[i]);
-                        await member[i].addMet(entry);
-                    }
-                }
-
-                ctx.status = 200;
+            // TODO: Simplify
+            // Is group older than ttl
+            if (now.isBefore(then)) {
+                Group = Group
             }
             else {
-                ctx.status = 403;
+                Group = null;
+            }
+
+            // If group exists and is available (ttl)
+            if (Group) {
+                let inAlready = await entry.hasMember(Group);
+
+                if (body.key === entry.key) {
+                    if (!inAlready)
+                        await entry.addMember(Group);
+
+                    let member = await Data.Entry.findAll(
+                        {
+                            include: {
+                                model: Data.Group,
+                                as: 'Member',
+                                where: {
+                                    gid: Group.gid
+                                },
+                                required: true
+                            }
+                        }
+                    );
+
+                    for (let i = -1; ++i < member.length;) {
+                        if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
+                            await entry.addMet(member[i]);
+                            await member[i].addMet(entry);
+                        }
+                    }
+
+                    ctx.status = 200;
+                }
+                else {
+                    ctx.status = 403;
+                }
+            }
+            else {
+                ctx.status = 400;
+                ctx.body = "Nothing to see here. Group not available.";
             }
         }
         catch (ex) {

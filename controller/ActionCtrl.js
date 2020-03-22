@@ -118,30 +118,44 @@ function joinGroup(ctx) {
                 else if (mode === 'shortcode') {
                     Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
                 }
-                let inAlready = yield entry.hasMember(Group);
-                if (body.key === entry.key) {
-                    if (!inAlready)
-                        yield entry.addMember(Group);
-                    let member = yield db_1.Data.Entry.findAll({
-                        include: {
-                            model: db_1.Data.Group,
-                            as: 'Member',
-                            where: {
-                                gid: Group.gid
-                            },
-                            required: true
-                        }
-                    });
-                    for (let i = -1; ++i < member.length;) {
-                        if (member[i].uid !== uid) {
-                            yield entry.addMet(member[i]);
-                            yield member[i].addMet(entry);
-                        }
-                    }
-                    ctx.status = 200;
+                let now = moment.utc(Group.createdAt);
+                let then = moment.utc().subtract(Group.ttl, 'hours');
+                if (now.isBefore(then)) {
+                    Group = Group;
                 }
                 else {
-                    ctx.status = 403;
+                    Group = null;
+                }
+                if (Group) {
+                    let inAlready = yield entry.hasMember(Group);
+                    if (body.key === entry.key) {
+                        if (!inAlready)
+                            yield entry.addMember(Group);
+                        let member = yield db_1.Data.Entry.findAll({
+                            include: {
+                                model: db_1.Data.Group,
+                                as: 'Member',
+                                where: {
+                                    gid: Group.gid
+                                },
+                                required: true
+                            }
+                        });
+                        for (let i = -1; ++i < member.length;) {
+                            if (member[i].uid !== uid) {
+                                yield entry.addMet(member[i]);
+                                yield member[i].addMet(entry);
+                            }
+                        }
+                        ctx.status = 200;
+                    }
+                    else {
+                        ctx.status = 403;
+                    }
+                }
+                else {
+                    ctx.status = 400;
+                    ctx.body = "Nothing to see here. Group not available.";
                 }
             }
             catch (ex) {
