@@ -152,6 +152,8 @@ export async function joinGroup(ctx: Context) {
                 );
             }
 
+            console.log(Group);
+
             let now = moment.utc(Group.createdAt);
             let then = moment.utc().subtract(Group.ttl, 'hours');
 

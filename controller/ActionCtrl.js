@@ -118,6 +118,7 @@ function joinGroup(ctx) {
                 else if (mode === 'shortcode') {
                     Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
                 }
+                console.log(Group);
                 let now = moment.utc(Group.createdAt);
                 let then = moment.utc().subtract(Group.ttl, 'hours');
                 if (now.isBefore(then)) {
