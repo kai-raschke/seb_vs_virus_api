@@ -488,13 +488,7 @@ export async function count(ctx: Context) {
             });
 
             ctx.status = 200;
-            //TODO Lengt bei einzelner Person trozdem 1
-            // hack -1
-            let count = didIMet.length - 1;
-            if (count < 0) count = 0;
-            log.info('count', { count, l: didIMet.length, met: didIMet});
-
-            ctx.body = count;
+            ctx.body = didIMet.length;
         }
         catch(ex){
             ctx.status = 500;

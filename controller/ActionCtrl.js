@@ -389,11 +389,7 @@ function count(ctx) {
                     raw: true
                 });
                 ctx.status = 200;
-                let count = didIMet.length - 1;
-                if (count < 0)
-                    count = 0;
-                log_1.log.info('count', { count, l: didIMet.length, met: didIMet });
-                ctx.body = count;
+                ctx.body = didIMet.length;
             }
             catch (ex) {
                 ctx.status = 500;
