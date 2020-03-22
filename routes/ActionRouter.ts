@@ -23,5 +23,5 @@ export const actionRouter = new Router()
     .post('/connect', connect)
     .post('/check', check)
     .post('/count', count)
-    .post('/count', errorLog)
+    .post('/errorlog', errorLog)
     .post('/statusBOS', statusBOS);
