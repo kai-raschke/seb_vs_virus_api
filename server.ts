@@ -32,7 +32,7 @@ export default function server (app: Application) {
             reset: 'Rate-Limit-Reset',
             total: 'Rate-Limit-Total'
         },
-        max: 100,
+        max: 200,
         disableHeader: false
     }));
 
