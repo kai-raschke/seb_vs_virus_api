@@ -219,6 +219,7 @@ export async function joinGroup(ctx: Context) {
  */
 export async function groupAlive(ctx: Context) {
     let body = ctx.request.body;
+    console.log('groupalive', ctx.request.body);
 
     if (body.gid) {
         let gid = body.gid;
@@ -249,12 +250,11 @@ export async function groupAlive(ctx: Context) {
         catch (ex){
             ctx.status = 500;
             ctx.body = "Something went wrong";
-            console.error(ex);
+            console.error('groupalive', ex.message);
             log.error(ex.message);
         }
     }
     else {
-        console.error('groupalive', ctx.request.body);
         ctx.status = 400;
         ctx.body = "Nothing to see here. Missing your data.";
     }}
