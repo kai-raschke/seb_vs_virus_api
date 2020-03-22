@@ -127,7 +127,7 @@ function joinGroup(ctx) {
                             model: db_1.Data.Group,
                             as: 'Member',
                             where: {
-                                gid
+                                gid: Group.gid
                             },
                             required: true
                         }

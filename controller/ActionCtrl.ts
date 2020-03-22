@@ -164,7 +164,7 @@ export async function joinGroup(ctx: Context) {
                             model: Data.Group,
                             as: 'Member',
                             where: {
-                                gid
+                                gid: Group.gid
                             },
                             required: true
                         }
