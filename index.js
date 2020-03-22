@@ -32,7 +32,7 @@ const server_1 = require("./server");
 let app = new Koa(), io = new IO();
 function startFunction() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield db_1.Data.db.sync({ force: (process.env.forceSync == 'false' ? false : true) });
+        yield db_1.Data.db.sync({ force: (process.env.forceSync == 'true' ? true : false) });
         yield seed_1.init();
         app.context.onerror = function onError(err) {
             if (!err)

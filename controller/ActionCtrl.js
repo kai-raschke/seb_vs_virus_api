@@ -216,6 +216,16 @@ function connect(ctx) {
                     ctx.status = 403;
                 }
             }
+            else {
+                ctx.status = 400;
+                ctx.body = "Could not find one of the submitted IDs";
+                if (!entry) {
+                    log_1.log.warn('notFound', { entry: 'entry', uid });
+                }
+                if (!xEntry) {
+                    log_1.log.warn('notFound', { entry: 'xEntry', xid });
+                }
+            }
         }
         else {
             ctx.status = 400;

@@ -276,6 +276,16 @@ export async function connect(ctx: Context) {
                 ctx.status = 403;
             }
         }
+        else {
+            ctx.status = 400;
+            ctx.body = "Could not find one of the submitted IDs";
+            if (!entry) {
+                log.warn('notFound', {entry: 'entry', uid});
+            }
+            if (!xEntry) {
+                log.warn('notFound', {entry: 'xEntry', xid});
+            }
+        }
     }
     else {
         ctx.status = 400;
