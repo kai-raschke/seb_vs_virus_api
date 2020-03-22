@@ -492,7 +492,7 @@ export async function count(ctx: Context) {
             // hack -1
             let count = didIMet.length - 1;
             if (count < 0) count = 0;
-            log.info('count', count, didIMet.length, didIMet);
+            log.info('count', { count, l: didIMet.length, met: didIMet});
 
             ctx.body = count;
         }

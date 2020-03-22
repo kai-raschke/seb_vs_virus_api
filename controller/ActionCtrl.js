@@ -392,7 +392,7 @@ function count(ctx) {
                 let count = didIMet.length - 1;
                 if (count < 0)
                     count = 0;
-                log_1.log.info('count', count, didIMet.length, didIMet);
+                log_1.log.info('count', { count, l: didIMet.length, met: didIMet });
                 ctx.body = count;
             }
             catch (ex) {
