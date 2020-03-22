@@ -3,9 +3,13 @@ import { log } from "./log";
 
 async function init(): Promise<void> {
     // Init version
-    await Data.SysInfo.create(
+    await Data.SysInfo. findCreateFind(
         {
-            version: "0.1.0"
+            where: {key: 'version'},
+            defaults: {
+                key: 'version',
+                value: "0.1.0"
+            }
         }
     );
 }

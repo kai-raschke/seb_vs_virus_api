@@ -2,7 +2,11 @@
 
 const SysInfo = (sequelize, DataTypes) => {
     return sequelize.define('SysInfo', {
-        version: {
+        key: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        value: {
             type: DataTypes.STRING,
             allowNull: false
         }
