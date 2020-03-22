@@ -474,7 +474,6 @@ export async function count(ctx: Context) {
                     model: Data.Entry,
                     as: 'Met',
                     attributes: ['status'],
-                    required: true,
                     through: {
                         attributes: ['id'],
                         where: {
@@ -488,7 +487,12 @@ export async function count(ctx: Context) {
             });
 
             ctx.status = 200;
-            ctx.body = didIMet.length;
+            //TODO Lengt bei einzelner Person trozdem 1
+            // hack -1
+            let count = didIMet.length - 1;
+            if (count < 0) count = 0;
+
+            ctx.body = count;
         }
         catch(ex){
             ctx.status = 500;
