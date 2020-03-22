@@ -416,7 +416,7 @@ function errorLog(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         let body = ctx.request.body;
         try {
-            log_1.log.error(body);
+            log_1.log.error('app_error', body);
         }
         catch (ex) {
         }

@@ -517,7 +517,7 @@ export async function errorLog (ctx: Context) {
     let body = ctx.request.body;
 
     try {
-        log.error(body);
+        log.error('app_error', body);
     }
     catch(ex){
 
