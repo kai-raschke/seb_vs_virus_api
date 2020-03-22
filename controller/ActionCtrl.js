@@ -120,12 +120,8 @@ function joinGroup(ctx) {
                 }
                 let now = moment.utc(Group.createdAt);
                 let then = moment.utc().subtract(Group.ttl, 'hours');
-                console.log(now, then, now.isBefore(then));
                 if (now.isBefore(then)) {
                     Group = null;
-                }
-                else {
-                    Group = Group;
                 }
                 if (Group) {
                     let inAlready = yield entry.hasMember(Group);
