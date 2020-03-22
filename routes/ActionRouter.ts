@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 import {
     check,
     connect,
-    count,
+    count, errorLog,
     groupAlive,
     joinGroup,
     register,
@@ -23,4 +23,5 @@ export const actionRouter = new Router()
     .post('/connect', connect)
     .post('/check', check)
     .post('/count', count)
+    .post('/count', errorLog)
     .post('/statusBOS', statusBOS);

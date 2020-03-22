@@ -11,5 +11,6 @@ exports.actionRouter = new Router()
     .post('/connect', ActionCtrl_1.connect)
     .post('/check', ActionCtrl_1.check)
     .post('/count', ActionCtrl_1.count)
+    .post('/count', ActionCtrl_1.errorLog)
     .post('/statusBOS', ActionCtrl_1.statusBOS);
 //# sourceMappingURL=ActionRouter.js.map

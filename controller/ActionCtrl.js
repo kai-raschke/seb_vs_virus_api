@@ -412,6 +412,18 @@ function statusBOS(ctx) {
     });
 }
 exports.statusBOS = statusBOS;
+function errorLog(ctx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let body = ctx.request.body;
+        try {
+            log_1.log.error(body);
+        }
+        catch (ex) {
+        }
+        ctx.status = 200;
+    });
+}
+exports.errorLog = errorLog;
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;

@@ -513,6 +513,18 @@ export async function statusBOS (ctx: Context) {
     ctx.status = 200;
 }
 
+export async function errorLog (ctx: Context) {
+    let body = ctx.request.body;
+
+    try {
+        log.error(body);
+    }
+    catch(ex){
+
+    }
+    ctx.status = 200;
+}
+
 function leftPad(str, length) {
     str = str == null ? '' : String(str);
     length = ~~length;
