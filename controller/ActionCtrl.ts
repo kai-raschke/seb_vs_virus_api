@@ -427,7 +427,7 @@ export async function check(ctx: Context) {
             // no case in the chain is critical
             if (didIMet.length === 0) {
                 ctx.status = 200;
-                ctx.body = false
+                ctx.body = 0
             }
             // Otherwise someone in the chain is critical
             else {
