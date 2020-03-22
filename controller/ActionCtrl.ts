@@ -474,6 +474,7 @@ export async function count(ctx: Context) {
                     model: Data.Entry,
                     as: 'Met',
                     attributes: ['status'],
+                    required: true,
                     through: {
                         attributes: ['id'],
                         where: {
