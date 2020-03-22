@@ -173,6 +173,7 @@ exports.joinGroup = joinGroup;
 function groupAlive(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         let body = ctx.request.body;
+        console.log('groupalive', ctx.request.body);
         if (body.gid) {
             let gid = body.gid;
             try {
@@ -197,7 +198,7 @@ function groupAlive(ctx) {
             catch (ex) {
                 ctx.status = 500;
                 ctx.body = "Something went wrong";
-                console.error(ex);
+                console.error('groupalive', ex.message);
                 log_1.log.error(ex.message);
             }
         }
@@ -336,7 +337,7 @@ function check(ctx) {
                 });
                 if (didIMet.length === 0) {
                     ctx.status = 200;
-                    ctx.body = false;
+                    ctx.body = 0;
                 }
                 else {
                     let scores = didIMet.map(val => val['Met.status']);
@@ -350,7 +351,6 @@ function check(ctx) {
             catch (ex) {
                 ctx.status = 500;
                 ctx.body = "Something went wrong";
-                console.error(ex);
                 log_1.log.error(ex.message);
             }
         }
@@ -376,6 +376,7 @@ function count(ctx) {
                         model: db_1.Data.Entry,
                         as: 'Met',
                         attributes: ['status'],
+                        required: true,
                         through: {
                             attributes: ['id'],
                             where: {
@@ -388,7 +389,11 @@ function count(ctx) {
                     raw: true
                 });
                 ctx.status = 200;
-                ctx.body = didIMet.length;
+                let count = didIMet.length - 1;
+                if (count < 0)
+                    count = 0;
+                log_1.log.info('count', count, didIMet.length, didIMet);
+                ctx.body = count;
             }
             catch (ex) {
                 ctx.status = 500;
