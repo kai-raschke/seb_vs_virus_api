@@ -12,7 +12,7 @@ function buildLog(conf: IConfig){
         logger = winston.createLogger({
             level: 'info',
             transports: [
-                new winston.transports.Console(),
+                // new winston.transports.Console(),
                 new Logsene({
                     token: process.env.LOGS_TOKEN,
                     level: 'info',
