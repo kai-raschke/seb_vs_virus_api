@@ -229,6 +229,8 @@ export async function groupAlive(ctx: Context) {
                 { where: { gid }}
             );
 
+            console.log(group);
+
             if (group) {
                 let now = moment.utc(group.createdAt);
                 let then = moment.utc().subtract(group.ttl, 'hours');

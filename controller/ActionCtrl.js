@@ -179,6 +179,7 @@ function groupAlive(ctx) {
             let gid = body.gid;
             try {
                 let group = yield db_1.Data.Group.findOne({ where: { gid } });
+                console.log(group);
                 if (group) {
                     let now = moment.utc(group.createdAt);
                     let then = moment.utc().subtract(group.ttl, 'hours');
