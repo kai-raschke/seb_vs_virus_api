@@ -23,6 +23,7 @@ function register(ctx) {
         age = (Number.isNaN(age) ? 0 : age);
         let sex = Number.parseInt(body.sex);
         sex = (Number.isNaN(sex) ? 0 : sex);
+        console.log(ctx.request.body, age, sex);
         try {
             yield db_1.Data.Entry.create({
                 uid, key,
