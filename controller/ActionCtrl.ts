@@ -48,7 +48,7 @@ export async function register(ctx: Context) {
             console.error(ex);
         }
 
-        log.error(ex.name);
+        log.error(ex.message);
     }
 }
 
@@ -106,7 +106,7 @@ export async function registerGroup(ctx: Context) {
             console.error(ex);
         }
 
-        log.error(ex.name);
+        log.error(ex.message);
     }
 }
 
@@ -223,7 +223,7 @@ export async function groupAlive(ctx: Context) {
             ctx.status = 500;
             ctx.body = "Something went wrong";
             console.error(ex);
-            log.error(ex.name);
+            log.error(ex.message);
         }
     }
     else {
@@ -420,7 +420,7 @@ export async function check(ctx: Context) {
             ctx.body = "Something went wrong";
 
             console.error(ex);
-            log.error(ex.name);
+            log.error(ex.message);
         }
     }
     else {
@@ -467,7 +467,7 @@ export async function count(ctx: Context) {
             ctx.body = "Something went wrong";
 
             console.error(ex);
-            log.error(ex.name);
+            log.error(ex.message);
         }
     }
     else {

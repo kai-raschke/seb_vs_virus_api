@@ -43,7 +43,7 @@ function register(ctx) {
                 ctx.body = "Unknown server error.";
                 console.error(ex);
             }
-            log_1.log.error(ex.name);
+            log_1.log.error(ex.message);
         }
     });
 }
@@ -85,7 +85,7 @@ function registerGroup(ctx) {
                 ctx.body = "Unknown server error.";
                 console.error(ex);
             }
-            log_1.log.error(ex.name);
+            log_1.log.error(ex.message);
         }
     });
 }
@@ -177,7 +177,7 @@ function groupAlive(ctx) {
                 ctx.status = 500;
                 ctx.body = "Something went wrong";
                 console.error(ex);
-                log_1.log.error(ex.name);
+                log_1.log.error(ex.message);
             }
         }
         else {
@@ -330,7 +330,7 @@ function check(ctx) {
                 ctx.status = 500;
                 ctx.body = "Something went wrong";
                 console.error(ex);
-                log_1.log.error(ex.name);
+                log_1.log.error(ex.message);
             }
         }
         else {
@@ -373,7 +373,7 @@ function count(ctx) {
                 ctx.status = 500;
                 ctx.body = "Something went wrong";
                 console.error(ex);
-                log_1.log.error(ex.name);
+                log_1.log.error(ex.message);
             }
         }
         else {
