@@ -1,5 +1,7 @@
 {
   "name": "seb_vs_virus_api",
+  "author": "Kai Raschke <kr@kaju.it>",
+  "license": "MIT",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
