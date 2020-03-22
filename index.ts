@@ -33,7 +33,7 @@ let     app     = new Koa(),
 async function startFunction() {
     // Sync database with sequelize (may force drop all if you wish - see docs)
     await Data.db.sync(
-        { force: (process.env.forceSync == 'false' ? false : true) } // Reset database on start || no config means demo mode (reset always)
+        { force: (process.env.forceSync == 'true' ? true : false) } // Reset database on start || no config means demo mode (reset always)
     );
 
     // Seeds data
