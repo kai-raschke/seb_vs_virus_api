@@ -128,57 +128,67 @@ export async function joinGroup(ctx: Context) {
             mode = "shortcode"
         }
 
-        let entry = await Data.Entry.findOne(
-            {
-                attributes: [ 'id', 'uid', 'status', 'key' ],
-                where: {
-                    uid
-                }
-            }
-        );
+        try{
+            log.info('join', { mode });
 
-        let Group;
-        if (mode === 'gid') {
-            Group = await Data.Group.findOne(
-                { where: { gid } }
-            );
-        }
-        else if (mode === 'shortcode') {
-            Group = await Data.Group.findOne(
-                { where: { shortcode: gid } }
-            );
-        }
-
-        let inAlready = await entry.hasMember(Group);
-
-        if (body.key === entry.key) {
-            if (!inAlready)
-                await entry.addMember(Group);
-
-            let member = await Data.Entry.findAll(
+            let entry = await Data.Entry.findOne(
                 {
-                    include: {
-                        model: Data.Group,
-                        as: 'Member',
-                        where: {
-                            gid
-                        },
-                        required: true
+                    attributes: [ 'id', 'uid', 'status', 'key' ],
+                    where: {
+                        uid
                     }
                 }
             );
 
-            for (let i = -1; ++i < member.length;) {
-                if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
-                    await entry.addMet(member[i]);
-                    await member[i].addMet(entry);
-                }
+            let Group;
+            if (mode === 'gid') {
+                Group = await Data.Group.findOne(
+                    { where: { gid } }
+                );
+            }
+            else if (mode === 'shortcode') {
+                Group = await Data.Group.findOne(
+                    { where: { shortcode: gid } }
+                );
             }
 
-            ctx.status = 200;
+            let inAlready = await entry.hasMember(Group);
+
+            if (body.key === entry.key) {
+                if (!inAlready)
+                    await entry.addMember(Group);
+
+                let member = await Data.Entry.findAll(
+                    {
+                        include: {
+                            model: Data.Group,
+                            as: 'Member',
+                            where: {
+                                gid
+                            },
+                            required: true
+                        }
+                    }
+                );
+
+                for (let i = -1; ++i < member.length;) {
+                    if (member[i].uid !== uid) { //nicht den eigenen Nutzer untereinander verknüpfen
+                        await entry.addMet(member[i]);
+                        await member[i].addMet(entry);
+                    }
+                }
+
+                ctx.status = 200;
+            }
+            else {
+                ctx.status = 403;
+            }
         }
-        else {
-            ctx.status = 403;
+        catch (ex) {
+            ctx.status = 500;
+            ctx.body = "Something went wrong";
+            console.error(ex);
+            log.error(ex.message);
         }
     }
     else {

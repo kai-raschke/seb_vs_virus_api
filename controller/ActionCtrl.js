@@ -103,43 +103,52 @@ function joinGroup(ctx) {
                 gid = body.shortcode;
                 mode = "shortcode";
             }
-            let entry = yield db_1.Data.Entry.findOne({
-                attributes: ['id', 'uid', 'status', 'key'],
-                where: {
-                    uid
-                }
-            });
-            let Group;
-            if (mode === 'gid') {
-                Group = yield db_1.Data.Group.findOne({ where: { gid } });
-            }
-            else if (mode === 'shortcode') {
-                Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
-            }
-            let inAlready = yield entry.hasMember(Group);
-            if (body.key === entry.key) {
-                if (!inAlready)
-                    yield entry.addMember(Group);
-                let member = yield db_1.Data.Entry.findAll({
-                    include: {
-                        model: db_1.Data.Group,
-                        as: 'Member',
-                        where: {
-                            gid
-                        },
-                        required: true
+            try {
+                log_1.log.info('join', { mode });
+                let entry = yield db_1.Data.Entry.findOne({
+                    attributes: ['id', 'uid', 'status', 'key'],
+                    where: {
+                        uid
                     }
                 });
-                for (let i = -1; ++i < member.length;) {
-                    if (member[i].uid !== uid) {
-                        yield entry.addMet(member[i]);
-                        yield member[i].addMet(entry);
-                    }
+                let Group;
+                if (mode === 'gid') {
+                    Group = yield db_1.Data.Group.findOne({ where: { gid } });
                 }
-                ctx.status = 200;
+                else if (mode === 'shortcode') {
+                    Group = yield db_1.Data.Group.findOne({ where: { shortcode: gid } });
+                }
+                let inAlready = yield entry.hasMember(Group);
+                if (body.key === entry.key) {
+                    if (!inAlready)
+                        yield entry.addMember(Group);
+                    let member = yield db_1.Data.Entry.findAll({
+                        include: {
+                            model: db_1.Data.Group,
+                            as: 'Member',
+                            where: {
+                                gid
+                            },
+                            required: true
+                        }
+                    });
+                    for (let i = -1; ++i < member.length;) {
+                        if (member[i].uid !== uid) {
+                            yield entry.addMet(member[i]);
+                            yield member[i].addMet(entry);
+                        }
+                    }
+                    ctx.status = 200;
+                }
+                else {
+                    ctx.status = 403;
+                }
             }
-            else {
-                ctx.status = 403;
+            catch (ex) {
+                ctx.status = 500;
+                ctx.body = "Something went wrong";
+                console.error(ex);
+                log_1.log.error(ex.message);
             }
         }
         else {
