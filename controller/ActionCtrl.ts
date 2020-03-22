@@ -447,7 +447,6 @@ export async function check(ctx: Context) {
             ctx.status = 500;
             ctx.body = "Something went wrong";
 
-            console.error(ex);
             log.error(ex.message);
         }
     }
