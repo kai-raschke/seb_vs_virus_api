@@ -4,6 +4,10 @@
 *Anwendung ist in TYPESCRIPT geschrieben.
 Vorhandene kompilierte JS Scripte liegen nur für Heroku bereits vor.*
 
+## Frontend
+
+https://github.com/sebsebli/infectiontracker
+
 ## Installation
 
 ```
