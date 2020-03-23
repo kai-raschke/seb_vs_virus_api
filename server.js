@@ -45,8 +45,8 @@ function server(app) {
     app.use(ActionRouter_1.actionRouter.routes());
     var strategy = new Auth0Strategy({
         domain: 'dev-infectiontracker.eu.auth0.com',
-        clientID: process.env.auth0_client_id,
-        clientSecret: process.env.auth0_client_secret,
+        clientID: (process.env.auth0_client_id ? process.env.auth0_client_id : "dummy"),
+        clientSecret: (process.env.auth0_client_secret ? process.env.auth0_client_secret : "dummy"),
         callbackURL: '/callback',
         state: true
     }, function (_accessToken, _refreshToken, _extraParams, profile, done) {
