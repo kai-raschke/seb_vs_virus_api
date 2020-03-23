@@ -9,6 +9,9 @@ const Group = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        name: {
+            type: DataTypes.STRING
+        },
         ttl: {
             type: DataTypes.INTEGER,
             defaultValue: 24

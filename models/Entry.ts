@@ -10,6 +10,12 @@ const Entry = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        alias: {
+            type: DataTypes.STRING
+        },
+        recovery: {
+            type: DataTypes.STRING
+        },
         status: {
             type: DataTypes.INTEGER,
             defaultValue: 0

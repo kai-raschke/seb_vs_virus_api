@@ -1,19 +1,19 @@
 'use strict';
 
-const Group = (sequelize, DataTypes) => {
-    return sequelize.define('Group', {
+const Authority = (sequelize, DataTypes) => {
+    return sequelize.define('Authority', {
         // Group ID
-        gid: {
+        aid: {
             type: DataTypes.UUID,
-            allowNull: false
-        },
-        // Shortcode used for easier access of members
-        shortcode: {
-            type: DataTypes.STRING,
             allowNull: false
         },
         name: {
             type: DataTypes.STRING
+        },
+        auth: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            defaultValue: DataTypes.UUIDv4
         },
         // Time-to-life of groups, defaults to 24 hours
         ttl: {
@@ -23,4 +23,4 @@ const Group = (sequelize, DataTypes) => {
     }, {});
 };
 
-module.exports = Group;
+module.exports = Authority;
