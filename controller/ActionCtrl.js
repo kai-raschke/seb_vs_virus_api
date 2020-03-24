@@ -19,7 +19,7 @@ const expo_push_1 = require("../lib/expo-push");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
-        const key = nanoid(12);
+        const key = nanoid();
         let body = ctx.request.body;
         let age = Number.parseInt(body.age);
         age = (Number.isNaN(age) ? 0 : age);
