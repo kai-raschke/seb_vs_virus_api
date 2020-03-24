@@ -45,7 +45,7 @@ export const authorityRouter = new Router()
                     }
                 );
 
-                let authority = await Data.Authority.findOne( { aid });
+                let authority = await Data.Authority.findOne( { where: {aid} });
 
                 entry.alias = alias;
                 entry.status = status;

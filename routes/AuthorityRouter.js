@@ -45,7 +45,7 @@ exports.authorityRouter = new Router()
                     uid
                 }
             });
-            let authority = yield db_1.Data.Authority.findOne({ aid });
+            let authority = yield db_1.Data.Authority.findOne({ where: { aid } });
             entry.alias = alias;
             entry.status = status;
             log_1.log.info('status authority', { status });
