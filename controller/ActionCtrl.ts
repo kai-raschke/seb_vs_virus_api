@@ -290,6 +290,13 @@ export async function connect(ctx: Context) {
 
         if (entry && xEntry) {
             if (body.key === entry.key){
+
+                // Did you met already, recreate
+                if (await entry.hasMet(xEntry)) {
+                    await entry.removeMet(xEntry);
+                    await xEntry.removeMet(entry);
+                }
+
                 // Person who scanned has met
                 await entry.addMet(xEntry);
 

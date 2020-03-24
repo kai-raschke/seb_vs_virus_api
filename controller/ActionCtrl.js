@@ -230,6 +230,10 @@ function connect(ctx) {
             });
             if (entry && xEntry) {
                 if (body.key === entry.key) {
+                    if (yield entry.hasMet(xEntry)) {
+                        yield entry.removeMet(xEntry);
+                        yield xEntry.removeMet(entry);
+                    }
                     yield entry.addMet(xEntry);
                     yield xEntry.addMet(entry);
                     try {
