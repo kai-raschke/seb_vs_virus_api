@@ -14,6 +14,7 @@ const uuid4 = require("uuid4");
 const nanoid = require("nanoid");
 const db_1 = require("./../lib/db");
 const log_1 = require("./../lib/log");
+const expo_push_1 = require("./../lib/expo-push");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
@@ -230,6 +231,13 @@ function connect(ctx) {
                 if (body.key === entry.key) {
                     yield entry.addMet(xEntry);
                     yield xEntry.addMet(entry);
+                    try {
+                        yield expo_push_1.pushSendCount(entry.uid);
+                        yield expo_push_1.pushSendCount(xEntry.uid);
+                    }
+                    catch (ex) {
+                        console.error('push count error', ex);
+                    }
                     log_1.log.info('connected', { age: entry.age, sex: entry.sex, xage: xEntry.age, xsex: xEntry.sex });
                     ctx.status = 200;
                 }

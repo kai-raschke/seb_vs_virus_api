@@ -4,6 +4,7 @@ import * as uuid4 from 'uuid4';
 import * as nanoid from 'nanoid'
 import { Data } from './../lib/db';
 import { log } from "./../lib/log";
+import { pushSendCount } from './../lib/expo-push';
 
 /**
  * Register "User" (uuid)
@@ -293,6 +294,15 @@ export async function connect(ctx: Context) {
 
                 // Also the other way around, the scanned person was met
                 await xEntry.addMet(entry);
+
+                // Try to push new count to users
+                try{
+                    await pushSendCount(entry.uid);
+                    await pushSendCount(xEntry.uid);
+                }
+                catch(ex){
+                    console.error('push count error', ex);
+                }
 
                 log.info('connected', {age: entry.age, sex: entry.sex, xage: xEntry.age, xsex: xEntry.sex});
 
