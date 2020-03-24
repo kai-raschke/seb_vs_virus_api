@@ -4,18 +4,19 @@ import Application, {Context} from "koa";
 import * as bodyParser from 'koa-body';
 import * as ratelimit from 'koa-ratelimit';
 import * as Router from 'koa-router';
+import * as uuid4 from 'uuid4';
 
 const session = require('koa-session');
 const passport = require('koa-passport');
 const Auth0Strategy = require('passport-auth0');
 
 import { log } from './lib/log';
-import expoPush from './lib/expo';
 
 import { infoRouter } from "./routes/InfoRouter";
 import { actionRouter } from "./routes/ActionRouter";
 import { authorityRouter } from "./routes/AuthorityRouter";
 import { pushRouter } from "./routes/PushRouter";
+import {Data} from "./lib/db";
 
 const db = new Map();
 
@@ -97,7 +98,7 @@ export default function server (app: Application) {
         )
         .get('/login',
             passport.authenticate('auth0', {
-                scope: 'openid email profile'
+                scope: 'openid'
                 // prompt: 'none',
                 // successRedirect: '/register',
                 // failureRedirect: '/count'
@@ -110,7 +111,27 @@ export default function server (app: Application) {
 
     app.use(async function(ctx, next) {
         if (ctx.isAuthenticated()) {
-            await next()
+            // Get or set authority
+            let auth = await Data.Authority.findCreateFind({
+                where: { aid: ctx.state.user.id },
+                defaults: { aid: ctx.state.user.id, auth: uuid4() }
+            });
+
+            if (auth.length > 0) {
+                // Get db ID
+                try{
+                    console.log(ctx.state)
+                    ctx.state.user.dbid = await auth[0].get('id');
+                }
+                catch(ex){
+                    console.error(ex);
+                }
+
+                await next();
+            }
+            else {
+                ctx.status = 403;
+            }
         } else {
             ctx.status = 403;
         }
