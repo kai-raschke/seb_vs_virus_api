@@ -12,6 +12,9 @@ const Entry = (sequelize, DataTypes) => {
         alias: {
             type: DataTypes.STRING
         },
+        token: {
+            type: DataTypes.STRING
+        },
         recovery: {
             type: DataTypes.STRING
         },
