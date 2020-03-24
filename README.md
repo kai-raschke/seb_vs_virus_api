@@ -29,28 +29,8 @@ ERM: https://dbdiagram.io/d/5e75790c4495b02c3b888bc6
 
 ## Logging
 
-Anwendungslogs werden an sematext übertragen.
-Falls kein eigenes Log token verfügbar ist, kann in /lib/log.ts der Logsense transporter durch den Konsolen Log ausgetauscht werden.
-
-```
-// new winston.transports.Console(),
-new Logsene({
-   token: process.env.LOGS_TOKEN,
-   level: 'info',
-   type: 'test_logs',
-   url: 'https://logsene-receiver.eu.sematext.com/_bulk'
-})
-```
-zu 
-```
-new winston.transports.Console(),
-// new Logsene({
-//   token: process.env.LOGS_TOKEN,
-//   level: 'info',
-//   type: 'test_logs',
-//   url: 'https://logsene-receiver.eu.sematext.com/_bulk'
-// })
-```
+Anwendungslogs können an sematext übertragen werden.
+Dazu muss ein Log token hinterlegt sein (siehe Config)
 
 ## App Config
 
