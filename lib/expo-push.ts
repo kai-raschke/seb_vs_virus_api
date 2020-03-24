@@ -5,25 +5,23 @@ import * as moment from "moment";
 const expo = new Expo();
 let savedPushTokens = [];
 
-const saveToken = (token, uid) => {
+const saveToken = async (token, uid) => {
     let pushToken = {token, uid};
-    let pushTokenExists = false;
-    for (let i = 0; i < savedPushTokens.length; i++) {
-        if (savedPushTokens[i] === pushToken) {
-            pushTokenExists = true;
-        }
-    }
 
-    if (!pushTokenExists) {
-        savedPushTokens.push({token, uid});
+    let entry = await Data.Entry.findOne( { where: {uid} });
+    if (entry) {
+        entry.token = token;
+        await entry.save();
     }
 };
 
 const pushSendCount = async (uid) => {
     try{
         let pushToken = savedPushTokens.find(pushToken => pushToken.uid === uid);
-        if (pushToken) {
-            let token = pushToken.token;
+        let entry = await Data.Entry.findOne({ where: {uid} });
+
+        if (entry) {
+            let token = entry.get('token');
             let notifications = [];
 
             if (!Expo.isExpoPushToken(token)) {
