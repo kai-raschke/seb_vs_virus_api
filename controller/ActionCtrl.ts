@@ -2,9 +2,10 @@ import { Context } from 'koa';
 import * as moment from "moment";
 import * as uuid4 from 'uuid4';
 import * as nanoid from 'nanoid'
-import { Data } from './../lib/db';
-import { log } from "./../lib/log";
-import { pushSendCount } from './../lib/expo-push';
+import { Data } from '../lib/db';
+import { log } from "../lib/log";
+import { leftPad, randomInt } from '../lib/util';
+import expoPush from '../lib/expo-push';
 
 /**
  * Register "User" (uuid)
@@ -289,6 +290,13 @@ export async function connect(ctx: Context) {
 
         if (entry && xEntry) {
             if (body.key === entry.key){
+
+                // Did you met already, recreate
+                if (await entry.hasMet(xEntry)) {
+                    await entry.removeMet(xEntry);
+                    await xEntry.removeMet(entry);
+                }
+
                 // Person who scanned has met
                 await entry.addMet(xEntry);
 
@@ -297,8 +305,8 @@ export async function connect(ctx: Context) {
 
                 // Try to push new count to users
                 try{
-                    await pushSendCount(entry.uid);
-                    await pushSendCount(xEntry.uid);
+                    await expoPush.pushSendCount(entry.uid);
+                    await expoPush.pushSendCount(xEntry.uid);
                 }
                 catch(ex){
                     console.error('push count error', ex);
@@ -532,19 +540,4 @@ export async function errorLog (ctx: Context) {
     ctx.status = 200;
 }
 
-function leftPad(str, length) {
-    str = str == null ? '' : String(str);
-    length = ~~length;
-    let pad = '';
-    let padLength = length - str.length;
 
-    while (padLength--) {
-        pad += '0'
-    }
-
-    return pad + str
-}
-
-function randomInt(low, high) {
-    return Math.floor(Math.random() * (high - low) + low)
-}

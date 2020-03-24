@@ -19,7 +19,7 @@ const saveToken = (token, uid) => {
     }
 };
 
-export const pushSendCount = async (uid) => {
+const pushSendCount = async (uid) => {
     try{
         let pushToken = savedPushTokens.find(pushToken => pushToken.uid === uid);
         if (pushToken) {
@@ -78,39 +78,11 @@ export const pushSendCount = async (uid) => {
     }
 };
 
-const handlePushTokens = (message) => {
-    let notifications = [];
-    for (let pushToken of savedPushTokens) {
-        if (!Expo.isExpoPushToken(pushToken)) {
-            console.error(`Push token ${pushToken} is not a valid Expo push token`);
-            continue;
-        }
-        notifications.push({
-            to: pushToken,
-            sound: 'default',
-            title: 'Message received!',
-            body: message,
-            data: { message }
-        })
-    }  // Defined in following step
-
-    let chunks = expo.chunkPushNotifications(notifications);  (async () => {
-        for (let chunk of chunks) {
-            try {
-                let receipts = await expo.sendPushNotificationsAsync(chunk);
-                console.log(receipts);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    })();
-};
-
 export interface IExpoPush {
     saveToken(token: string, uid: string): void
-    handlePushTokens(message: any): any
+    pushSendCount(uid: string): void
 }
 
-const expoPush: IExpoPush = { saveToken, handlePushTokens };
+const expoPush: IExpoPush = { saveToken, pushSendCount };
 
 export default expoPush;

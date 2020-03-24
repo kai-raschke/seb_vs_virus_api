@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Router = require("koa-router");
 const expo_push_1 = require("../lib/expo-push");
 const log_1 = require("../lib/log");
-const db_1 = require("./../lib/db");
+const db_1 = require("../lib/db");
 exports.pushRouter = new Router()
     .post('/pushreg', function (ctx) {
     return __awaiter(this, void 0, void 0, function* () {

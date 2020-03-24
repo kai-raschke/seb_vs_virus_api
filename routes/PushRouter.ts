@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 import {Context} from "koa";
 import expoPush from "../lib/expo-push";
 import {log} from "../lib/log";
-import { Data } from './../lib/db';
+import { Data } from '../lib/db';
 
 export const pushRouter = new Router()
     .post('/pushreg', async function(ctx: Context) {

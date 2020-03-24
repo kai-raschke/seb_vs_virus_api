@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require("koa-body");
 const ratelimit = require("koa-ratelimit");
 const Router = require("koa-router");
+const uuid4 = require("uuid4");
 const session = require('koa-session');
 const passport = require('koa-passport');
 const Auth0Strategy = require('passport-auth0');
@@ -19,6 +20,7 @@ const InfoRouter_1 = require("./routes/InfoRouter");
 const ActionRouter_1 = require("./routes/ActionRouter");
 const AuthorityRouter_1 = require("./routes/AuthorityRouter");
 const PushRouter_1 = require("./routes/PushRouter");
+const db_1 = require("./lib/db");
 const db = new Map();
 function server(app) {
     app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -82,14 +84,30 @@ function server(app) {
         });
     })
         .get('/login', passport.authenticate('auth0', {
-        scope: 'openid email profile'
+        scope: 'openid'
     }));
     app.use(authRouter.routes());
     app.use(passport.session());
     app.use(function (ctx, next) {
         return __awaiter(this, void 0, void 0, function* () {
             if (ctx.isAuthenticated()) {
-                yield next();
+                let auth = yield db_1.Data.Authority.findCreateFind({
+                    where: { aid: ctx.state.user.id },
+                    defaults: { aid: ctx.state.user.id, auth: uuid4() }
+                });
+                if (auth.length > 0) {
+                    try {
+                        console.log(ctx.state);
+                        ctx.state.user.dbid = yield auth[0].get('id');
+                    }
+                    catch (ex) {
+                        console.error(ex);
+                    }
+                    yield next();
+                }
+                else {
+                    ctx.status = 403;
+                }
             }
             else {
                 ctx.status = 403;
