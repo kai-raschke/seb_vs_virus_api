@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bunyan": "^1.8.12",
+    "expo-server-sdk": "^3.4.0",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-passport": "^4.1.3",

@@ -15,6 +15,7 @@ const Router = require("koa-router");
 const session = require('koa-session');
 const passport = require('koa-passport');
 const Auth0Strategy = require('passport-auth0');
+const expo_1 = require("./lib/expo");
 const InfoRouter_1 = require("./routes/InfoRouter");
 const ActionRouter_1 = require("./routes/ActionRouter");
 const AuthorityRouter_1 = require("./routes/AuthorityRouter");
@@ -43,6 +44,27 @@ function server(app) {
     app.use(bodyParser());
     app.use(InfoRouter_1.infoRouter.routes());
     app.use(ActionRouter_1.actionRouter.routes());
+    const pushRouter = new Router()
+        .post('/token', function (ctx) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                expo_1.default.saveToken(ctx.request.body.token.value);
+                console.log(`Received push token, ${ctx.request.body.token.value}`);
+                ctx.body = `Received push token, ${ctx.request.body.token.value}`;
+            }
+            catch (ex) {
+                console.error(ex);
+                ctx.status = 500;
+                ctx.body = ex;
+            }
+        });
+    })
+        .post('/message', (ctx) => __awaiter(this, void 0, void 0, function* () {
+        expo_1.default.handlePushTokens(ctx.request.body.message);
+        console.log(`Received message, ${ctx.request.body.message}`);
+        ctx.body = `Received message, ${ctx.request.body.message}`;
+    }));
+    app.use(pushRouter.routes());
     var strategy = new Auth0Strategy({
         domain: 'dev-infectiontracker.eu.auth0.com',
         clientID: (process.env.auth0_client_id ? process.env.auth0_client_id : "dummy"),
