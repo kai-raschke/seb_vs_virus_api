@@ -15,6 +15,7 @@ import expoPush from './lib/expo';
 import { infoRouter } from "./routes/InfoRouter";
 import { actionRouter } from "./routes/ActionRouter";
 import { authorityRouter } from "./routes/AuthorityRouter";
+import { pushRouter } from "./routes/PushRouter";
 
 const db = new Map();
 
@@ -47,26 +48,6 @@ export default function server (app: Application) {
 
     app.use(infoRouter.routes());
     app.use(actionRouter.routes());
-
-    const pushRouter = new Router()
-        .post('/token', async function(ctx) {
-            try{
-                expoPush.saveToken(ctx.request.body.token.value);
-                console.log(`Received push token, ${ctx.request.body.token.value}`);
-                ctx.body = `Received push token, ${ctx.request.body.token.value}`;
-            }
-            catch(ex){
-                console.error(ex);
-                ctx.status = 500;
-                ctx.body = ex;
-            }
-        })
-        .post('/message', async (ctx) => {
-            expoPush.handlePushTokens(ctx.request.body.message);
-            console.log(`Received message, ${ctx.request.body.message}`);
-            ctx.body = `Received message, ${ctx.request.body.message}`;
-        });
-
     app.use(pushRouter.routes());
 
     var strategy = new Auth0Strategy({

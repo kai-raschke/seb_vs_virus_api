@@ -3,9 +3,17 @@ import Expo from 'expo-server-sdk';
 const expo = new Expo();
 let savedPushTokens = [];
 
-const saveToken = (token) => {
-    if (savedPushTokens.indexOf(token === -1)) {
-        savedPushTokens.push(token);
+const saveToken = (token, uid) => {
+    let pushToken = {token, uid};
+    let pushTokenExists = false;
+    for (let i = 0; i < savedPushTokens.length; i++) {
+        if (savedPushTokens[i] === pushToken) {
+            pushTokenExists = true;
+        }
+    }
+
+    if (!pushTokenExists) {
+        savedPushTokens.push({token, uid});
     }
 };
 
@@ -38,7 +46,7 @@ const handlePushTokens = (message) => {
 };
 
 export interface IExpoPush {
-    saveToken(token: any): void
+    saveToken(token: string, uid: string): void
     handlePushTokens(message: any): any
 }
 

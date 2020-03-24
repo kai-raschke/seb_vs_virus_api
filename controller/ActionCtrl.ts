@@ -21,8 +21,6 @@ export async function register(ctx: Context) {
     let sex: number = Number.parseInt(body.sex);
     sex = (Number.isNaN(sex) ? 0 : sex);
 
-    console.log( ctx.request.body, age, sex);
-
     // Save "user" with uid to database
     try{
         await Data.Entry.create(
