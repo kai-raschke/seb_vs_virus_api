@@ -397,6 +397,77 @@ function check(ctx) {
     });
 }
 exports.check = check;
+function alias(ctx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let body = ctx.request.body;
+        if (body.key) {
+            if (body.uid) {
+                let uid = body.uid;
+                try {
+                    log_1.log.info('alias');
+                    let entry = yield db_1.Data.Entry.findOne({ where: { uid } });
+                    if (entry) {
+                        if (entry.key === body.key) {
+                            let didIMet = yield db_1.Data.Entry.findAll({
+                                attributes: ['id'],
+                                where: {
+                                    uid
+                                },
+                                include: {
+                                    model: db_1.Data.Entry,
+                                    as: 'Met',
+                                    attributes: ['status', 'alias'],
+                                    where: {
+                                        status: { [db_1.Data.Op.gte]: 3 }
+                                    },
+                                    through: {
+                                        attributes: ['id'],
+                                        where: {
+                                            createdAt: {
+                                                [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                            }
+                                        }
+                                    }
+                                },
+                                raw: true
+                            });
+                            console.log(didIMet);
+                            if (didIMet.length === 0) {
+                                ctx.status = 200;
+                                ctx.body = [];
+                            }
+                            else {
+                                let alias = didIMet.map(val => val['Met.alias']);
+                                ctx.status = 200;
+                                ctx.body = alias;
+                            }
+                        }
+                        else {
+                            ctx.status = 403;
+                        }
+                    }
+                    else {
+                        ctx.status = 400;
+                        ctx.body = "Nothing to see here. No user.";
+                    }
+                }
+                catch (ex) {
+                    ctx.status = 500;
+                    ctx.body = "Something went wrong";
+                    log_1.log.error(ex.message);
+                }
+            }
+            else {
+                ctx.status = 400;
+                ctx.body = "Nothing to see here. Missing your data.";
+            }
+        }
+        else {
+            ctx.status = 403;
+        }
+    });
+}
+exports.alias = alias;
 function count(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         let body = ctx.request.body;

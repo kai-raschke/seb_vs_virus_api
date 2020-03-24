@@ -499,6 +499,88 @@ export async function check(ctx: Context) {
     }
 }
 
+export async function alias(ctx: Context) {
+    let body = ctx.request.body;
+
+    if (body.key) {
+        if (body.uid) {
+            let uid: String = body.uid;
+            try{
+                log.info('alias');
+
+                let entry = await Data.Entry.findOne(
+                    { where: { uid } }
+                );
+
+                if (entry) {
+                    if (entry.key === body.key) {
+                        let didIMet = await Data.Entry.findAll({
+                            attributes: ['id'],
+                            where: {
+                                uid
+                            },
+                            include: {
+                                model: Data.Entry,
+                                as: 'Met',
+                                attributes: ['status', 'alias'],
+                                where: {
+                                    status: { [Data.Op.gte]: 3 }
+                                },
+                                through: {
+                                    attributes: ['id'],
+                                    where: {
+                                        createdAt: {
+                                            [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                        }
+                                    }
+                                }
+                            },
+                            raw: true
+                        });
+
+                        console.log(didIMet)
+                        // no case in the chain is critical
+                        if (didIMet.length === 0) {
+                            ctx.status = 200;
+                            ctx.body = [];
+                        }
+                        // Otherwise someone in the chain is critical
+                        else {
+                            // Get all states
+                            let alias = didIMet.map(val => val['Met.alias']);
+
+                            ctx.status = 200;
+                            ctx.body = alias;
+                        }
+                    }
+                    else {
+                        ctx.status = 403;
+                    }
+
+                }
+                else {
+                    ctx.status = 400;
+                    ctx.body = "Nothing to see here. No user.";
+                }
+
+            }
+            catch(ex){
+                ctx.status = 500;
+                ctx.body = "Something went wrong";
+
+                log.error(ex.message);
+            }
+        }
+        else {
+            ctx.status = 400;
+            ctx.body = "Nothing to see here. Missing your data.";
+        }
+    }
+    else {
+        ctx.status = 403;
+    }
+}
+
 /**
  * Count number of connected peers
  */
