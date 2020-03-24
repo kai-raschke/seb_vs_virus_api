@@ -12,9 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const uuid4 = require("uuid4");
 const nanoid = require("nanoid");
-const db_1 = require("./../lib/db");
-const log_1 = require("./../lib/log");
-const expo_push_1 = require("./../lib/expo-push");
+const db_1 = require("../lib/db");
+const log_1 = require("../lib/log");
+const util_1 = require("../lib/util");
+const expo_push_1 = require("../lib/expo-push");
 function register(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         const uid = uuid4();
@@ -56,7 +57,7 @@ function registerGroup(ctx) {
             let exists = null;
             let shortcode, loops = 0;
             do {
-                shortcode = leftPad(randomInt(0, 9999999), 7);
+                shortcode = util_1.leftPad(util_1.randomInt(0, 9999999), 7);
                 loops++;
                 exists = yield db_1.Data.Group.findOne({
                     where: {
@@ -232,8 +233,8 @@ function connect(ctx) {
                     yield entry.addMet(xEntry);
                     yield xEntry.addMet(entry);
                     try {
-                        yield expo_push_1.pushSendCount(entry.uid);
-                        yield expo_push_1.pushSendCount(xEntry.uid);
+                        yield expo_push_1.default.pushSendCount(entry.uid);
+                        yield expo_push_1.default.pushSendCount(xEntry.uid);
                     }
                     catch (ex) {
                         console.error('push count error', ex);
@@ -430,17 +431,4 @@ function errorLog(ctx) {
     });
 }
 exports.errorLog = errorLog;
-function leftPad(str, length) {
-    str = str == null ? '' : String(str);
-    length = ~~length;
-    let pad = '';
-    let padLength = length - str.length;
-    while (padLength--) {
-        pad += '0';
-    }
-    return pad + str;
-}
-function randomInt(low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
-}
 //# sourceMappingURL=ActionCtrl.js.map
