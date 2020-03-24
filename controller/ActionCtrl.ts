@@ -368,6 +368,33 @@ export async function status(ctx: Context) {
 
                         await entry.save();
 
+                        // Push inform chain
+                        if (status === 3 || status === 4) {
+                            let didIMet = await Data.Entry.findAll({
+                                attributes: ['id'],
+                                where: {
+                                    uid
+                                },
+                                include: {
+                                    model: Data.Entry,
+                                    as: 'Met',
+                                    attributes: ['token'],
+                                    through: {
+                                        attributes: ['id'],
+                                        where: {
+                                            createdAt: {
+                                                [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                            }
+                                        }
+                                    }
+                                },
+                                raw: true
+                            });
+
+                            let tokens = didIMet.map(val => val['Met.token']);
+                            expoPush.pushSendStatus(tokens, status);
+                        }
+
                         ctx.status = 200;
                         ctx.body = { uid: entry.uid, status: entry.status };
                     }

@@ -287,6 +287,30 @@ function status(ctx) {
                             entry.status = status;
                             log_1.log.info('status', { status });
                             yield entry.save();
+                            if (status === 3 || status === 4) {
+                                let didIMet = yield db_1.Data.Entry.findAll({
+                                    attributes: ['id'],
+                                    where: {
+                                        uid
+                                    },
+                                    include: {
+                                        model: db_1.Data.Entry,
+                                        as: 'Met',
+                                        attributes: ['token'],
+                                        through: {
+                                            attributes: ['id'],
+                                            where: {
+                                                createdAt: {
+                                                    [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                                }
+                                            }
+                                        }
+                                    },
+                                    raw: true
+                                });
+                                let tokens = didIMet.map(val => val['Met.token']);
+                                expo_push_1.default.pushSendStatus(tokens, status);
+                            }
                             ctx.status = 200;
                             ctx.body = { uid: entry.uid, status: entry.status };
                         }

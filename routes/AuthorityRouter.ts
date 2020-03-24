@@ -3,6 +3,8 @@ import {Context} from "koa";
 import {Data} from "../lib/db";
 import {log} from "../lib/log";
 import {createAlias, leftPad, randomInt} from '../lib/util';
+import * as moment from "moment";
+import expoPush from "../lib/expo-push";
 /**
  * Root routes: just return the API name.
  */
@@ -55,6 +57,33 @@ export const authorityRouter = new Router()
                 await entry.save();
 
                 entry.setAuthority(authority);
+
+                // push inform chain about status
+                if (status === 3 || status === 4) {
+                    let didIMet = await Data.Entry.findAll({
+                        attributes: ['id'],
+                        where: {
+                            uid
+                        },
+                        include: {
+                            model: Data.Entry,
+                            as: 'Met',
+                            attributes: ['token'],
+                            through: {
+                                attributes: ['id'],
+                                where: {
+                                    createdAt: {
+                                        [Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                    }
+                                }
+                            }
+                        },
+                        raw: true
+                    });
+
+                    let tokens = didIMet.map(val => val['Met.token']);
+                    expoPush.pushSendStatus(tokens, status);
+                }
 
                 ctx.status = 200;
                 ctx.body = { alias }
