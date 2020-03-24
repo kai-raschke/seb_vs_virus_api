@@ -13,7 +13,7 @@ import expoPush from '../lib/expo-push';
 export async function register(ctx: Context) {
     // generate uuid
     const uid = uuid4();
-    const key = nanoid(12);
+    const key = nanoid();
 
     let body = ctx.request.body;
 
