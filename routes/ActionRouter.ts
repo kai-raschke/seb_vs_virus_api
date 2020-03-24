@@ -1,5 +1,6 @@
 import * as Router from 'koa-router';
 import {
+    alias,
     check,
     connect,
     count, errorLog,
@@ -22,6 +23,7 @@ export const actionRouter = new Router()
     .post('/status', status)
     .post('/connect', connect)
     .post('/check', check)
+    .post('/alias', alias)
     .post('/count', count)
     .post('/errorlog', errorLog)
     .post('/statusBOS', statusBOS);

@@ -10,6 +10,7 @@ exports.actionRouter = new Router()
     .post('/status', ActionCtrl_1.status)
     .post('/connect', ActionCtrl_1.connect)
     .post('/check', ActionCtrl_1.check)
+    .post('/alias', ActionCtrl_1.alias)
     .post('/count', ActionCtrl_1.count)
     .post('/errorlog', ActionCtrl_1.errorLog)
     .post('/statusBOS', ActionCtrl_1.statusBOS);

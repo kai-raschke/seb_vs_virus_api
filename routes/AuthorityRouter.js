@@ -13,6 +13,8 @@ const Router = require("koa-router");
 const db_1 = require("../lib/db");
 const log_1 = require("../lib/log");
 const util_1 = require("../lib/util");
+const moment = require("moment");
+const expo_push_1 = require("../lib/expo-push");
 exports.authorityRouter = new Router()
     .get('/secret', function (ctx) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -51,6 +53,30 @@ exports.authorityRouter = new Router()
             log_1.log.info('status authority', { status });
             yield entry.save();
             entry.setAuthority(authority);
+            if (status === 3 || status === 4) {
+                let didIMet = yield db_1.Data.Entry.findAll({
+                    attributes: ['id'],
+                    where: {
+                        uid
+                    },
+                    include: {
+                        model: db_1.Data.Entry,
+                        as: 'Met',
+                        attributes: ['token'],
+                        through: {
+                            attributes: ['id'],
+                            where: {
+                                createdAt: {
+                                    [db_1.Data.Op.gte]: moment().subtract(14, 'days').toDate()
+                                }
+                            }
+                        }
+                    },
+                    raw: true
+                });
+                let tokens = didIMet.map(val => val['Met.token']);
+                expo_push_1.default.pushSendStatus(tokens, status);
+            }
             ctx.status = 200;
             ctx.body = { alias };
         }
