@@ -393,7 +393,6 @@ export async function status(ctx: Context) {
                             });
 
                             let tokens = didIMet.map(val => val['Met.token']);
-                            console.log(tokens);
                             expoPush.pushSendStatus(tokens, status);
                         }
 

@@ -310,7 +310,6 @@ function status(ctx) {
                                     raw: true
                                 });
                                 let tokens = didIMet.map(val => val['Met.token']);
-                                console.log(tokens);
                                 expo_push_1.default.pushSendStatus(tokens, status);
                             }
                             ctx.status = 200;
