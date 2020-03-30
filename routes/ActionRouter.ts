@@ -3,7 +3,8 @@ import {
     alias,
     check,
     connect,
-    count, errorLog,
+    count,
+    //errorLog,
     groupAlive,
     joinGroup,
     register,
@@ -25,5 +26,5 @@ export const actionRouter = new Router()
     .post('/check', check)
     .post('/alias', alias)
     .post('/count', count)
-    .post('/errorlog', errorLog)
+    //.post('/errorlog', errorLog)
     .post('/statusBOS', statusBOS);
