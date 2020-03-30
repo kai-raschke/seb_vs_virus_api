@@ -275,7 +275,7 @@ function status(ctx) {
             let uid = body.uid;
             let status = Number.parseInt(body.status);
             if (!Number.isNaN(status)) {
-                if (status >= 0 && status <= 4) {
+                if (status >= 0 && status < 4) {
                     let entry = yield db_1.Data.Entry.findOne({
                         attributes: ['id', 'uid', 'status', 'key'],
                         where: {
@@ -350,7 +350,7 @@ function check(ctx) {
                 log_1.log.info('check');
                 yield db_1.Data.Entry.update({ lastCheck: moment().toDate() }, { where: { uid } });
                 let didIMet = yield db_1.Data.Entry.findAll({
-                    attributes: ['id'],
+                    attributes: ['id', 'status'],
                     where: {
                         uid
                     },

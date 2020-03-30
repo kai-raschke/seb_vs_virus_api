@@ -350,7 +350,7 @@ export async function status(ctx: Context) {
         let status: number = Number.parseInt(body.status);
 
         if (!Number.isNaN(status)) {
-            if (status >= 0 && status <= 4) {
+            if (status >= 0 && status < 4) {
                 let entry = await Data.Entry.findOne(
                     {
                         attributes: [ 'id', 'uid', 'status', 'key' ],
@@ -445,7 +445,7 @@ export async function check(ctx: Context) {
             );
 
             let didIMet = await Data.Entry.findAll({
-                attributes: ['id'],
+                attributes: ['id', 'status'],
                 where: {
                     uid
                 },
