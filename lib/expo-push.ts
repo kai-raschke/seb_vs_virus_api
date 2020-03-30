@@ -1,6 +1,7 @@
 import Expo from 'expo-server-sdk';
 import {Data} from "./db";
 import * as moment from "moment";
+import {log} from "./log";
 
 const expo = new Expo();
 let savedPushTokens = [];
@@ -95,6 +96,7 @@ const pushSendStatus =  (tokens, status) => {
                 }
             }
 
+            log.info('send push', {token: notifications});
             let chunks = expo.chunkPushNotifications(notifications);  (async () => {
                 for (let chunk of chunks) {
                     try {
@@ -102,6 +104,7 @@ const pushSendStatus =  (tokens, status) => {
                         console.log(receipts);
                     } catch (error) {
                         console.error(error);
+                        log.error(error.message);
                     }
                 }
             })();
