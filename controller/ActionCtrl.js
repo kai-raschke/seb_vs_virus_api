@@ -297,6 +297,7 @@ function status(ctx) {
                                         model: db_1.Data.Entry,
                                         as: 'Met',
                                         attributes: ['token'],
+                                        required: true,
                                         through: {
                                             attributes: ['id'],
                                             where: {
@@ -308,6 +309,7 @@ function status(ctx) {
                                     },
                                     raw: true
                                 });
+                                console.log(didIMet);
                                 let tokens = didIMet.map(val => val['Met.token']);
                                 expo_push_1.default.pushSendStatus(tokens, status);
                             }
