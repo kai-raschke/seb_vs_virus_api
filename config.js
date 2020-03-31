@@ -21,7 +21,7 @@ const Config = {
         dbUrl: process.env.DATABASE_URL,
         host: process.env.db_host || 'localhost',
         port: (Number.isNaN(Number.parseInt(process.env.db_port)) ? 5432 : Number.parseInt(process.env.db_port)),
-        name: process.env.db_name || 'cargo7_auftrag',
+        name: process.env.db_name || 'seb_vs_virus',
         user: process.env.db_user || 'postgres',
         pass: process.env.db_pass || '',
         dialect: 'postgres'
